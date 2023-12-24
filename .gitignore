@@ -473,5 +473,5 @@ composer.lock
 *.sass.map
 *.scss.map
 
-/config/db_azure.php
-/config/
+!/config/db_azure.php
+!/config/
