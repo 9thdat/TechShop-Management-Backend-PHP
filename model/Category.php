@@ -1,6 +1,7 @@
 <?php
 
-class Category{
+class Category
+{
     private $conn;
     private $ID;
     private $NAME;
@@ -58,11 +59,13 @@ class Category{
         $this->NAME = $NAME;
     }
 
-    public function getAllCategory(){
-        $query = "SELECT * FROM category";
+    public function getAllCategory()
+    {
+        $query = "SELECT * FROM Category";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
     }
 }
+
 ?>

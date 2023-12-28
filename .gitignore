@@ -227,7 +227,7 @@ flycheck_*.el
 *.tmPreferences.cache
 *.stTheme.cache
 
-# Workspace files are user-specific
+# Workspace files are User-specific
 *.sublime-workspace
 
 # Project files should be checked into the repository, unless a significant
@@ -474,4 +474,6 @@ composer.lock
 *.scss.map
 
 !/config/db_azure.php
+!/config/
+!/composer.json
 !/config/

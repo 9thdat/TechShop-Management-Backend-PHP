@@ -3,20 +3,18 @@
 class Customer
 {
     private $conn;
-    private $EMAIL;
-    private $Name;
-    private $Password;
-    private $Phone;
-    private $Gender;
-    private $Birthday;
-    private $Address;
-    private $Ward;
-    private $District;
-    private $City;
-    private $Image;
-    private $Status;
-    private $ResetTokenHash;
-    private $ResetTokenExpiresAt;
+    private $email;
+    private $name;
+    private $password;
+    private $phone;
+    private $gender;
+    private $birthday;
+    private $address;
+    private $ward;
+    private $district;
+    private $city;
+    private $image;
+    private $status;
 
     public function __construct($connect)
     {
@@ -44,15 +42,15 @@ class Customer
      */
     public function getEmail()
     {
-        return $this->Email;
+        return $this->email;
     }
 
     /**
-     * @param mixed $Email
+     * @param mixed $email
      */
-    public function setEmail($Email)
+    public function setEmail($email)
     {
-        $this->Email = $Email;
+        $this->email = $email;
     }
 
     /**
@@ -60,15 +58,15 @@ class Customer
      */
     public function getName()
     {
-        return $this->Name;
+        return $this->name;
     }
 
     /**
-     * @param mixed $Name
+     * @param mixed $name
      */
-    public function setName($Name)
+    public function setName($name)
     {
-        $this->Name = $Name;
+        $this->name = $name;
     }
 
     /**
@@ -76,15 +74,15 @@ class Customer
      */
     public function getPassword()
     {
-        return $this->Password;
+        return $this->password;
     }
 
     /**
-     * @param mixed $Password
+     * @param mixed $password
      */
-    public function setPassword($Password)
+    public function setPassword($password)
     {
-        $this->Password = $Password;
+        $this->password = $password;
     }
 
     /**
@@ -92,15 +90,15 @@ class Customer
      */
     public function getPhone()
     {
-        return $this->Phone;
+        return $this->phone;
     }
 
     /**
-     * @param mixed $Phone
+     * @param mixed $phone
      */
-    public function setPhone($Phone)
+    public function setPhone($phone)
     {
-        $this->Phone = $Phone;
+        $this->phone = $phone;
     }
 
     /**
@@ -108,15 +106,15 @@ class Customer
      */
     public function getGender()
     {
-        return $this->Gender;
+        return $this->gender;
     }
 
     /**
-     * @param mixed $Gender
+     * @param mixed $gender
      */
-    public function setGender($Gender)
+    public function setGender($gender)
     {
-        $this->Gender = $Gender;
+        $this->gender = $gender;
     }
 
     /**
@@ -124,15 +122,15 @@ class Customer
      */
     public function getBirthday()
     {
-        return $this->Birthday;
+        return $this->birthday;
     }
 
     /**
-     * @param mixed $Birthday
+     * @param mixed $birthday
      */
-    public function setBirthday($Birthday)
+    public function setBirthday($birthday)
     {
-        $this->Birthday = $Birthday;
+        $this->birthday = $birthday;
     }
 
     /**
@@ -140,15 +138,15 @@ class Customer
      */
     public function getAddress()
     {
-        return $this->Address;
+        return $this->address;
     }
 
     /**
-     * @param mixed $Address
+     * @param mixed $address
      */
-    public function setAddress($Address)
+    public function setAddress($address)
     {
-        $this->Address = $Address;
+        $this->address = $address;
     }
 
     /**
@@ -156,15 +154,15 @@ class Customer
      */
     public function getWard()
     {
-        return $this->Ward;
+        return $this->ward;
     }
 
     /**
-     * @param mixed $Ward
+     * @param mixed $ward
      */
-    public function setWard($Ward)
+    public function setWard($ward)
     {
-        $this->Ward = $Ward;
+        $this->ward = $ward;
     }
 
     /**
@@ -172,15 +170,15 @@ class Customer
      */
     public function getDistrict()
     {
-        return $this->District;
+        return $this->district;
     }
 
     /**
-     * @param mixed $District
+     * @param mixed $district
      */
-    public function setDistrict($District)
+    public function setDistrict($district)
     {
-        $this->District = $District;
+        $this->district = $district;
     }
 
     /**
@@ -188,15 +186,15 @@ class Customer
      */
     public function getCity()
     {
-        return $this->City;
+        return $this->city;
     }
 
     /**
-     * @param mixed $City
+     * @param mixed $city
      */
-    public function setCity($City)
+    public function setCity($city)
     {
-        $this->City = $City;
+        $this->city = $city;
     }
 
     /**
@@ -204,15 +202,15 @@ class Customer
      */
     public function getImage()
     {
-        return $this->Image;
+        return $this->image;
     }
 
     /**
-     * @param mixed $Image
+     * @param mixed $image
      */
-    public function setImage($Image)
+    public function setImage($image)
     {
-        $this->Image = $Image;
+        $this->image = $image;
     }
 
     /**
@@ -220,137 +218,129 @@ class Customer
      */
     public function getStatus()
     {
-        return $this->Status;
+        return $this->status;
     }
 
     /**
-     * @param mixed $Status
+     * @param mixed $status
      */
-    public function setStatus($Status)
+    public function setStatus($status)
     {
-        $this->Status = $Status;
+        $this->status = $status;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getResetTokenHash()
+
+    public function GetAllCustomers()
     {
-        return $this->ResetTokenHash;
-    }
-
-    /**
-     * @param mixed $ResetTokenHash
-     */
-    public function setResetTokenHash($ResetTokenHash)
-    {
-        $this->ResetTokenHash = $ResetTokenHash;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResetTokenExpiresAt()
-    {
-        return $this->ResetTokenExpiresAt;
-    }
-
-    /**
-     * @param mixed $ResetTokenExpiresAt
-     */
-    public function setResetTokenExpiresAt($ResetTokenExpiresAt)
-    {
-        $this->ResetTokenExpiresAt = $ResetTokenExpiresAt;
-    }
-
-    public function getAllCustomer()
-    {
-        $query = "SELECT * FROM customer";
-
-        try {
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
-            return $stmt;
-        } catch (PDOException $e) {
-            // Log or print the error
-            echo "Error: " . $e->getMessage();
-            return false;
-        }
-    }
-
-    public function createCustomer($customer)
-    {
-        $existingCustomer = $this->getCustomerByEmail($customer['Email']);
-
-        if ($existingCustomer == null) {
-            // Email is unique, proceed to create the customer
-            // Hash the password using SHA-256 (replace "hashPassword" with your actual hashing method)
-            $customer['Password'] = hashPassword($customer['Password']);
-
-            $query = "INSERT INTO customer (Email, Name, Password, Phone, Gender, Birthday, Address, Ward, District, City, Image, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ssssssssssss", $customer['Email'], $customer['Name'], $customer['Password'], $customer['Phone'], $customer['Gender'], $customer['Birthday'], $customer['Address'], $customer['Ward'], $customer['District'], $customer['City'], $customer['Image'], $customer['Status']);
-            $stmt->execute();
-
-            // Return a JSON response with status 201 (Created)
-            return array("status" => "201");
-        } else {
-            // Email already exists, return a response indicating the conflict
-            return array("status" => "409", "message" => "Email already exists");
-        }
-    }
-
-    public function getCustomerByEmail($email)
-    {
-        $query = "SELECT * FROM customer WHERE Email = ?";
+        $query = "SELECT * FROM Customer";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $email);
         $stmt->execute();
-        $result = $stmt->get_result();
+        return $stmt;
+    }
 
-        if ($result->num_rows > 0) {
-            return $result->fetch_assoc();
+    public function GetCustomerByEmail($email)
+    {
+        $query = "SELECT * FROM Customer WHERE EMAIL = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        // Check is the email exists
+        if ($stmt->rowCount() > 0) {
+            return [
+                'status' => 200,
+                'data' => $stmt->fetch(PDO::FETCH_ASSOC)
+            ];
         } else {
-            return null;
+            return [
+                'status' => 404,
+                'message' => 'Email not found'
+            ];
         }
     }
 
-    public function updateCustomer($email, $customer)
+    public function createCustomer()
     {
-        $existingCustomer = $this->getCustomerByEmail($email);
-
-        if ($existingCustomer != null) {
-            // Email exists, proceed to update the customer
-            $query = "UPDATE customer SET Name = ?, Phone = ?, Gender = ?, Birthday = ?, Address = ?, Ward = ?, District = ?, City = ?, Image = ?, Status = ? WHERE Email = ?";
+        try {
+            $query = "SELECT * FROM Customer WHERE EMAIL = :email";
             $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("sssssssssss", $customer['Name'], $customer['Phone'], $customer['Gender'], $customer['Birthday'], $customer['Address'], $customer['Ward'], $customer['District'], $customer['City'], $customer['Image'], $customer['Status'], $email);
+            $stmt->bindParam(':email', $this->getEmail());
             $stmt->execute();
 
-            return array("status" => "204");
-        } else {
-            // Customer with the given email does not exist
-            return array("status" => "404", "message" => "Customer not found");
+            $existingCustomer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$existingCustomer) {
+                // Email is unique, proceed to create the Customer
+
+                // Hash the password using SHA-256 (replace "hash" with your actual hashing method)
+                $this->setPassword(hash('sha256', $this->getPassword()));
+
+                // Insert Customer data into the database
+                $query = "INSERT INTO Customer (EMAIL, NAME, PASSWORD, PHONE, GENDER, BIRTHDAY, ADDRESS, WARD, DISTRICT, CITY, IMAGE, STATUS) 
+                          VALUES (:email, :name, :password, :phone, :gender, :birthday, :address, :ward, :district, :city, :image, :status)";
+
+                $stmt = $this->conn->prepare($query);
+
+                $stmt->bindParam(':email', $this->getEmail());
+                $stmt->bindParam(':name', $this->getName());
+                $stmt->bindParam(':password', $this->getPassword());
+                $stmt->bindParam(':phone', $this->getPhone());
+                $stmt->bindParam(':gender', $this->getGender());
+                $stmt->bindParam(':birthday', $this->getBirthday());
+                $stmt->bindParam(':address', $this->getAddress());
+                $stmt->bindParam(':ward', $this->getWard());
+                $stmt->bindParam(':district', $this->getDistrict());
+                $stmt->bindParam(':city', $this->getCity());
+                $stmt->bindParam(':image', $this->getImage());
+                $stmt->bindParam(':status', $this->getStatus());
+
+                $stmt->execute();
+
+                // Return a JWT token on successful creation
+                return [
+                    'status' => 201,
+                    'email' => $this->getEmail(),
+                ];
+            } else {
+                // Email already exists, return false
+                return [
+                    'status' => 409,
+                    'message' => 'Email already exists',
+                ];
+            }
+        } catch (Exception $e) {
+            // Handle exceptions, log errors, or return false as needed
+            return [
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ];
         }
     }
 
-    public function changeCurrentStatus($email)
+    public function getTop5Customers()
     {
-        $existingCustomer = $this->getCustomerByEmail($email);
+        $currentMonth = date('m');
+        $query = "SELECT c.email as customerEmail, c.name, c.image, c.phone, SUM(o.total_price) as revenue
+                  FROM orders o
+                  JOIN Customer c ON o.customer_email = c.email
+                  WHERE MONTH(o.completed_date) = :currentMonth
+                  GROUP BY o.customer_email
+                  ORDER BY revenue DESC
+                  LIMIT 5";
 
-        if ($existingCustomer != null) {
-            // Email exists, proceed to change the status
-            $newStatus = ($existingCustomer['Status'] == "active") ? "inactive" : "active";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
+        $stmt->execute();
 
-            $query = "UPDATE customer SET Status = ? WHERE Email = ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ss", $newStatus, $email);
-            $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-            return array("status" => "204");
-        } else {
-            // Customer with the given email does not exist
-            return array("status" => "404", "message" => "Customer not found");
-        }
+    public function changeStatus($email)
+    {
+        $query = "UPDATE Customer SET status = CASE WHEN status = 'active' THEN 'inactive' ELSE 'active' END WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        return $stmt->execute();
     }
 }
 

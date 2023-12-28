@@ -3,13 +3,27 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include_once '../../config/db_azure.php';  // Đảm bảo đường dẫn đến file db_azure.php là chính xác
+include_once '../../config/db_azure.php';
 include_once '../../model/Category.php';
+include_once '../../model/User.php';
 
 $database = new db();
 $db = $database->connect();
 
+$user = new User($db);
 $category = new Category($db);
+
+// Get the token from the headers
+$allHeaders = getallheaders();
+$token = $allHeaders['Authorization'];
+
+// Validate the token
+if (!$token || !$user->validateToken($token)) {
+    // Invalid or missing token
+    http_response_code(401);
+    echo json_encode(['status' => 401, 'message' => 'Unauthorized']);
+    exit();
+}
 
 $result = $category->getAllCategory();
 $num = $result->rowCount();
@@ -29,10 +43,8 @@ if ($num > 0) {
         array_push($categories_arr['data'], $category_item);
     }
 
-    // Hiển thị dữ liệu dưới dạng JSON
     echo json_encode($categories_arr);
 } else {
-    // Nếu không có danh mục nào
     echo json_encode(
         array('message' => 'Không tìm thấy danh mục.')
     );

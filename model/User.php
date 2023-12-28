@@ -1,4 +1,11 @@
 <?php
+require '../../vendor/autoload.php';
+
+use \Firebase\JWT\JWT;
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\Key;
 
 class User
 {
@@ -36,38 +43,6 @@ class User
     public function setConn($conn)
     {
         $this->conn = $conn;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEMAIL()
-    {
-        return $this->EMAIL;
-    }
-
-    /**
-     * @param mixed $EMAIL
-     */
-    public function setEMAIL($EMAIL)
-    {
-        $this->EMAIL = $EMAIL;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNAME()
-    {
-        return $this->NAME;
-    }
-
-    /**
-     * @param mixed $NAME
-     */
-    public function setNAME($NAME)
-    {
-        $this->NAME = $NAME;
     }
 
     /**
@@ -217,22 +192,6 @@ class User
     /**
      * @return mixed
      */
-    public function getROLE()
-    {
-        return $this->ROLE;
-    }
-
-    /**
-     * @param mixed $ROLE
-     */
-    public function setROLE($ROLE)
-    {
-        $this->ROLE = $ROLE;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getSTATUS()
     {
         return $this->STATUS;
@@ -246,12 +205,134 @@ class User
         $this->STATUS = $STATUS;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getEMAIL()
+    {
+        return $this->EMAIL;
+    }
+
+    /**
+     * @param mixed $EMAIL
+     */
+    public function setEMAIL($EMAIL)
+    {
+        $this->EMAIL = $EMAIL;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNAME()
+    {
+        return $this->NAME;
+    }
+
+    /**
+     * @param mixed $NAME
+     */
+    public function setNAME($NAME)
+    {
+        $this->NAME = $NAME;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getROLE()
+    {
+        return $this->ROLE;
+    }
+
+    /**
+     * @param mixed $ROLE
+     */
+    public function setROLE($ROLE)
+    {
+        $this->ROLE = $ROLE;
+    }
+
     public function getAllUsers()
     {
-        $query = "SELECT * FROM user";
+        $query = "SELECT * FROM User";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
+    }
+
+    public function validateUser($credentials)
+    {
+        if ($credentials == null || empty($credentials['email']) || empty($credentials['password'])) {
+            return json_encode(["error" => "Invalid client request"]);
+        }
+
+        $email = $credentials['email'];
+        $password = $credentials['password'];
+
+        $query = "SELECT * FROM User WHERE Email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $stmt->execute();
+        if (!$stmt) {
+            die(json_encode(["error" => "Query execution failed."]));
+        }
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+//        var_dump($User);
+//        die(); // This will stop the execution to see the output
+
+        if (!$user) {
+            return json_encode(["error" => "User not found"]);
+        }
+
+        // Check if the password is correct
+        if ($password !== $user['PASSWORD']) {
+            return json_encode(["error" => "Invalid password"]);
+        }
+
+        $role = $user['ROLE'];
+        $status = $user['STATUS'];
+        $token = $this->generateToken($user);
+
+        return json_encode([
+            "role" => $role,
+            "status" => $status,
+            "token" => $token
+        ]);
+    }
+
+
+    private function generateToken($user)
+    {
+        $key = "techshopmanagementby9thdat9thdat";
+
+        $payload = [
+            "iat" => time(), // Thời gian token được tạo
+            "nbf" => time(), // Token có hiệu lực từ thời điểm nào
+            "exp" => time() + (60 * 60 * 24), // Token hết hạn sau 1 ngày
+            "data" => [
+                "email" => $user['EMAIL'],
+                "name" => $user['NAME'],
+                "role" => $user['ROLE'],
+            ],
+        ];
+
+        return JWT::encode($payload, $key, 'HS256'); // Add 'HS256' as the third argument
+    }
+
+    public function validateToken($token)
+    {
+        $key = "techshopmanagementby9thdat9thdat";
+
+        try {
+            $decoded = JWT::decode($token, new Key($key, 'HS256'));
+            return $decoded;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }
 
