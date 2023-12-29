@@ -263,12 +263,150 @@ class ParameterBackupcharger
         $this->BRAND = $BRAND;
     }
 
-    public function getAllParameterBackupchargers()
+    public function getParameterBackupchargerByProductId($productId)
     {
-        $query = "SELECT * FROM parameter_backupcharger";
+        $query = "SELECT * FROM parameter_backupcharger WHERE PRODUCT_ID = :productId";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt;
+
+        $parameterBackupcharger = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $parameterBackupcharger;
+    }
+
+    public function addParameterBackupcharger($parameterBackupcharger)
+    {
+        try {
+            // Set ParameterBackupcharger properties
+            $this->PRODUCT_ID = $parameterBackupcharger->PRODUCT_ID;
+            $this->EFFICIENCY = $parameterBackupcharger->EFFICIENCY;
+            $this->CAPACITY = $parameterBackupcharger->CAPACITY;
+            $this->TIMEFULLCHARGE = $parameterBackupcharger->TIMEFULLCHARGE;
+            $this->INPUT = $parameterBackupcharger->INPUT;
+            $this->OUTPUT = $parameterBackupcharger->OUTPUT;
+            $this->CORE = $parameterBackupcharger->CORE;
+            $this->TECH = $parameterBackupcharger->TECH;
+            $this->SIZE = $parameterBackupcharger->SIZE;
+            $this->WEIGHT = $parameterBackupcharger->WEIGHT;
+            $this->MADEIN = $parameterBackupcharger->MADEIN;
+            $this->BRANDOF = $parameterBackupcharger->BRANDOF;
+            $this->BRAND = $parameterBackupcharger->BRAND;
+
+            // Add ParameterBackupcharger to the database
+            $query = "INSERT INTO parameter_backupcharger 
+                      (PRODUCT_ID, EFFICIENCY, CAPACITY, TIMEFULLCHARGE, INPUT, OUTPUT, CORE, TECH, SIZE, WEIGHT, MADEIN, BRANDOF, BRAND) 
+                      VALUES 
+                      (:PRODUCT_ID, :EFFICIENCY, :CAPACITY, :TIMEFULLCHARGE, :INPUT, :OUTPUT, :CORE, :TECH, :SIZE, :WEIGHT, :MADEIN, :BRANDOF, :BRAND)";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
+            $stmt->bindParam(':EFFICIENCY', $this->EFFICIENCY);
+            $stmt->bindParam(':CAPACITY', $this->CAPACITY);
+            $stmt->bindParam(':TIMEFULLCHARGE', $this->TIMEFULLCHARGE);
+            $stmt->bindParam(':INPUT', $this->INPUT);
+            $stmt->bindParam(':OUTPUT', $this->OUTPUT);
+            $stmt->bindParam(':CORE', $this->CORE);
+            $stmt->bindParam(':TECH', $this->TECH);
+            $stmt->bindParam(':SIZE', $this->SIZE);
+            $stmt->bindParam(':WEIGHT', $this->WEIGHT);
+            $stmt->bindParam(':MADEIN', $this->MADEIN);
+            $stmt->bindParam(':BRANDOF', $this->BRANDOF);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the ParameterBackupcharger is added successfully
+        } catch (Exception $ex) {
+            throw new Exception('Error: ' . $ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function updateParameterBackupcharger($id, $parameterBackupcharger)
+    {
+        try {
+            // Set properties from the request
+            $this->ID = $id;
+            $this->PRODUCT_ID = $parameterBackupcharger->PRODUCT_ID;
+            $this->EFFICIENCY = $parameterBackupcharger->EFFICIENCY;
+            $this->CAPACITY = $parameterBackupcharger->CAPACITY;
+            $this->TIMEFULLCHARGE = $parameterBackupcharger->TIMEFULLCHARGE;
+            $this->INPUT = $parameterBackupcharger->INPUT;
+            $this->OUTPUT = $parameterBackupcharger->OUTPUT;
+            $this->CORE = $parameterBackupcharger->CORE;
+            $this->TECH = $parameterBackupcharger->TECH;
+            $this->SIZE = $parameterBackupcharger->SIZE;
+            $this->WEIGHT = $parameterBackupcharger->WEIGHT;
+            $this->MADEIN = $parameterBackupcharger->MADEIN;
+            $this->BRANDOF = $parameterBackupcharger->BRANDOF;
+            $this->BRAND = $parameterBackupcharger->BRAND;
+
+            // Update the database
+            $query = "UPDATE parameter_backupcharger
+                      SET
+                        PRODUCT_ID = :PRODUCT_ID,
+                        EFFICIENCY = :EFFICIENCY,
+                        CAPACITY = :CAPACITY,
+                        TIMEFULLCHARGE = :TIMEFULLCHARGE,
+                        INPUT = :INPUT,
+                        OUTPUT = :OUTPUT,
+                        CORE = :CORE,
+                        TECH = :TECH,
+                        SIZE = :SIZE,
+                        WEIGHT = :WEIGHT,
+                        MADEIN = :MADEIN,
+                        BRANDOF = :BRANDOF,
+                        BRAND = :BRAND
+                      WHERE
+                        ID = :ID";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
+            $stmt->bindParam(':EFFICIENCY', $this->EFFICIENCY);
+            $stmt->bindParam(':CAPACITY', $this->CAPACITY);
+            $stmt->bindParam(':TIMEFULLCHARGE', $this->TIMEFULLCHARGE);
+            $stmt->bindParam(':INPUT', $this->INPUT);
+            $stmt->bindParam(':OUTPUT', $this->OUTPUT);
+            $stmt->bindParam(':CORE', $this->CORE);
+            $stmt->bindParam(':TECH', $this->TECH);
+            $stmt->bindParam(':SIZE', $this->SIZE);
+            $stmt->bindParam(':WEIGHT', $this->WEIGHT);
+            $stmt->bindParam(':MADEIN', $this->MADEIN);
+            $stmt->bindParam(':BRANDOF', $this->BRANDOF);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+            $stmt->bindParam(':ID', $this->ID);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the update is successful
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function deleteParameterBackupcharger($id)
+    {
+        try {
+            $query = "DELETE FROM parameter_backupcharger WHERE ID = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return true; // Trả về true nếu xóa thành công
+        } catch (Exception $ex) {
+            // Ghi log lỗi để debug
+            error_log($ex->getMessage());
+            return false; // Trả về false nếu có lỗi
+        }
     }
 }
 

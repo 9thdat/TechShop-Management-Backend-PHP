@@ -229,13 +229,129 @@ class ParameterAdapter
         $this->BRAND = $BRAND;
     }
 
-    public function getAllParameterAdapters()
+    public function getParameterAdapterByProductId($productId)
     {
-        $query = "SELECT * FROM parameter_adapter";
+        $query = "SELECT * FROM parameter_adapter WHERE PRODUCT_ID = :productId";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':productId', $productId);
         $stmt->execute();
+
         return $stmt;
     }
+
+    public function addParameterAdapter($parameterAdapter)
+    {
+        try {
+            // Set parameter adapter properties
+            $this->PRODUCT_ID = $parameterAdapter->getPRODUCT_ID();
+            $this->MODEL = $parameterAdapter->getModel();
+            $this->FUNCTION = $parameterAdapter->getFunction();
+            $this->INPUT = $parameterAdapter->getInput();
+            $this->OUTPUT = $parameterAdapter->getOutput();
+            $this->MAXIMUM = $parameterAdapter->getMaximum();
+            $this->SIZE = $parameterAdapter->getSize();
+            $this->TECH = $parameterAdapter->getTech();
+            $this->MADEIN = $parameterAdapter->getMadeIn();
+            $this->BRANDOF = $parameterAdapter->getBrandOf();
+            $this->BRAND = $parameterAdapter->getBrand();
+
+            // Add parameter adapter to the database
+            $query = "INSERT INTO parameter_adapter 
+                      (PRODUCT_ID, MODEL, `FUNCTION`, INPUT, OUTPUT, MAXIMUM, SIZE, TECH, MADEIN, BRANDOF, BRAND) 
+                      VALUES 
+                      (:PRODUCT_ID, :MODEL, :FUNCTION, :INPUT, :OUTPUT, :MAXIMUM, :SIZE, :TECH, :MADEIN, :BRANDOF, :BRAND)";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
+            $stmt->bindParam(':MODEL', $this->MODEL);
+            $stmt->bindParam(':FUNCTION', $this->FUNCTION);
+            $stmt->bindParam(':INPUT', $this->INPUT);
+            $stmt->bindParam(':OUTPUT', $this->OUTPUT);
+            $stmt->bindParam(':MAXIMUM', $this->MAXIMUM);
+            $stmt->bindParam(':SIZE', $this->SIZE);
+            $stmt->bindParam(':TECH', $this->TECH);
+            $stmt->bindParam(':MADEIN', $this->MADEIN);
+            $stmt->bindParam(':BRANDOF', $this->BRANDOF);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the parameter adapter is added successfully
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            throw new Exception($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function updateParameterAdapter()
+    {
+        try {
+            $query = "UPDATE parameter_adapter 
+                      SET PRODUCT_ID = :PRODUCT_ID, MODEL = :MODEL, `FUNCTION` = :FUNCTION, 
+                          INPUT = :INPUT, OUTPUT = :OUTPUT, MAXIMUM = :MAXIMUM, 
+                          SIZE = :SIZE, TECH = :TECH, MADEIN = :MADEIN, 
+                          BRANDOF = :BRANDOF, BRAND = :BRAND 
+                      WHERE ID = :ID";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
+            $stmt->bindParam(':MODEL', $this->MODEL);
+            $stmt->bindParam(':FUNCTION', $this->FUNCTION);
+            $stmt->bindParam(':INPUT', $this->INPUT);
+            $stmt->bindParam(':OUTPUT', $this->OUTPUT);
+            $stmt->bindParam(':MAXIMUM', $this->MAXIMUM);
+            $stmt->bindParam(':SIZE', $this->SIZE);
+            $stmt->bindParam(':TECH', $this->TECH);
+            $stmt->bindParam(':MADEIN', $this->MADEIN);
+            $stmt->bindParam(':BRANDOF', $this->BRANDOF);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+            $stmt->bindParam(':ID', $this->ID);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the update is successful
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function deleteParameterAdapter()
+    {
+        try {
+            // Check if the parameter adapter with the given ID exists
+            $queryCheck = "SELECT * FROM parameter_adapter WHERE ID = :id";
+            $stmtCheck = $this->conn->prepare($queryCheck);
+            $stmtCheck->bindParam(':id', $this->ID);
+            $stmtCheck->execute();
+
+            if ($stmtCheck->rowCount() > 0) {
+                // Delete the parameter adapter
+                $queryDelete = "DELETE FROM parameter_adapter WHERE ID = :id";
+                $stmtDelete = $this->conn->prepare($queryDelete);
+                $stmtDelete->bindParam(':id', $this->ID);
+                $stmtDelete->execute();
+
+                return ['status' => 200, 'message' => 'Parameter adapter deleted successfully.'];
+            } else {
+                // Parameter adapter not found
+                return ['status' => 404, 'message' => 'Parameter adapter not found.'];
+            }
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return ['status' => 500, 'message' => 'Internal Server Error: ' . $ex->getMessage()];
+        }
+    }
+
 }
 
 ?>
