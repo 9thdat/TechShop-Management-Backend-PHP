@@ -110,11 +110,25 @@ class ProductQuantity
         $this->SOLD = $SOLD;
     }
 
-    public function getAllProductQuantities()
+    public function getProductQuantity($productId)
     {
-        $query = "SELECT * FROM product_quantity";
+        $query = "SELECT * FROM product_quantity WHERE PRODUCT_ID = :id";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $productId);
         $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function getTotalQuantity($productId, $color)
+    {
+        $query = "SELECT SUM(QUANTITY) as totalQuantity FROM product_quantity WHERE PRODUCT_ID = :productId AND COLOR = :color";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
+        $stmt->bindParam(':color', $color, PDO::PARAM_STR);
+        $stmt->execute();
+
         return $stmt;
     }
 }

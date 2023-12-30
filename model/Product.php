@@ -178,12 +178,142 @@ class Product
         $this->DISCOUNT_PERCENT = $DISCOUNT_PERCENT;
     }
 
-    public function getAllProducts()
+    public function getProduct($id)
     {
-        $query = "SELECT * FROM product";
+        try {
+            $query = "SELECT * FROM product WHERE ID = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return $stmt;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getProductsAndQuantity()
+    {
+        $query = "SELECT p.Id, p.Name, p.Price, p.Description, p.Image, p.Category, p.Brand, 
+                         p.PRE_DISCOUNT, p.DISCOUNT_PERCENT, 
+                         SUM(pq.Quantity) as Quantity
+                  FROM product p
+                  LEFT JOIN product_quantity pq ON p.Id = pq.PRODUCT_ID
+                  GROUP BY p.Id";
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
+
         return $stmt;
+    }
+
+    public function getLastId()
+    {
+        $query = "SELECT ID FROM product ORDER BY ID DESC LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['ID'];
+    }
+
+    public function addProduct($data)
+    {
+        try {
+            // Thiết lập các thuộc tính sản phẩm từ dữ liệu đầu vào
+            $this->NAME = $data->name;
+            $this->PRICE = $data->price;
+            $this->DESCRIPTION = $data->description;
+            $this->IMAGE = $data->image;
+            $this->CATEGORY = $data->category;
+            $this->BRAND = $data->brand;
+            $this->PRE_DISCOUNT = $data->preDiscount;
+            $this->DISCOUNT_PERCENT = $data->discountPercent;
+
+            // Thêm sản phẩm vào cơ sở dữ liệu
+            $query = "INSERT INTO product 
+                      (NAME, PRICE, DESCRIPTION, IMAGE, CATEGORY, BRAND, PRE_DISCOUNT, DISCOUNT_PERCENT) 
+                      VALUES 
+                      (:NAME, :PRICE, :DESCRIPTION, :IMAGE, :CATEGORY, :BRAND, :PRE_DISCOUNT, :DISCOUNT_PERCENT)";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind các tham số
+            $stmt->bindParam(':NAME', $this->NAME);
+            $stmt->bindParam(':PRICE', $this->PRICE);
+            $stmt->bindParam(':DESCRIPTION', $this->DESCRIPTION);
+            $stmt->bindParam(':IMAGE', $this->IMAGE);
+            $stmt->bindParam(':CATEGORY', $this->CATEGORY);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+            $stmt->bindParam(':PRE_DISCOUNT', $this->PRE_DISCOUNT);
+            $stmt->bindParam(':DISCOUNT_PERCENT', $this->DISCOUNT_PERCENT);
+
+            // Thực thi câu lệnh
+            $stmt->execute();
+
+            return true; // Trả về true nếu sản phẩm được thêm thành công
+        } catch (Exception $ex) {
+            // Ghi log lỗi cho mục đích debug
+            error_log($ex->getMessage());
+            return false; // Trả về false nếu có lỗi
+        }
+    }
+
+    public function deleteProduct($id)
+    {
+        $query = "UPDATE product_quantity SET QUANTITY = 0 WHERE PRODUCT_ID = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            return true; // Return true if the product is deleted successfully
+        } else {
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function updateProduct($id, $product)
+    {
+        try {
+            // Set product properties
+            $this->ID = $id;
+            $this->NAME = $product->name;
+            $this->PRICE = $product->price;
+            $this->DESCRIPTION = $product->description;
+            $this->IMAGE = $product->image;
+            $this->CATEGORY = $product->category;
+            $this->BRAND = $product->brand;
+            $this->PRE_DISCOUNT = $product->preDiscount;
+            $this->DISCOUNT_PERCENT = $product->discountPercent;
+
+            // Update the product in the database
+            $query = "UPDATE product 
+                      SET NAME = :NAME, PRICE = :PRICE, DESCRIPTION = :DESCRIPTION, IMAGE = :IMAGE, 
+                          CATEGORY = :CATEGORY, BRAND = :BRAND, PRE_DISCOUNT = :PRE_DISCOUNT, DISCOUNT_PERCENT = :DISCOUNT_PERCENT 
+                      WHERE ID = :ID";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':ID', $this->ID);
+            $stmt->bindParam(':NAME', $this->NAME);
+            $stmt->bindParam(':PRICE', $this->PRICE);
+            $stmt->bindParam(':DESCRIPTION', $this->DESCRIPTION);
+            $stmt->bindParam(':IMAGE', $this->IMAGE);
+            $stmt->bindParam(':CATEGORY', $this->CATEGORY);
+            $stmt->bindParam(':BRAND', $this->BRAND);
+            $stmt->bindParam(':PRE_DISCOUNT', $this->PRE_DISCOUNT);
+            $stmt->bindParam(':DISCOUNT_PERCENT', $this->DISCOUNT_PERCENT);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the product is updated successfully
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            throw $ex;
+            return false; // Return false if there's an error
+        }
     }
 }
 
