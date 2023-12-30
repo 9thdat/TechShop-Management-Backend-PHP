@@ -1,7 +1,7 @@
 <?php
-
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ProductQuantity.php';
@@ -28,7 +28,7 @@ try {
 
     // Get posted data
     $data = json_decode(file_get_contents("php://input"));
-    
+
     // Check if data is not empty
     if (!empty($data->productId) && !empty($data->color) && isset($data->quantity) && isset($data->sold)) {
         // Set product quantity properties

@@ -1,10 +1,17 @@
 <?php
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+// Respond to preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
-include_once '../../config/db_azure.php'; // Adjust the path as needed
+include_once '../../config/db_azure.php';
 include_once '../../model/User.php';
+
 $database = new db();
 $db = $database->connect();
 
@@ -43,5 +50,4 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 500, 'message' => 'Internal Server Error: ' . $e->getMessage()]);
 }
-
 ?>

@@ -244,21 +244,17 @@ class OrderDetail
                 }
 
                 // Tính toán giá trị mới của $quantity và $sold
-                $quantity += $productQuantityInDb['Quantity'] + $orderDetail['QUANTITY'];
-                $sold += $productQuantityInDb['Sold'] - $orderDetail['QUANTITY'];
+                $quantity = $productQuantityInDb['QUANTITY'] + $orderDetail['QUANTITY'];
+                $sold = $productQuantityInDb['SOLD'] - $orderDetail['QUANTITY'];
+
+                $queryUpdateProductQuantity = "UPDATE product_quantity SET Quantity = :quantity, Sold = :sold WHERE PRODUCT_ID = :productId AND Color = :color";
+                $stmtUpdateProductQuantity = $this->conn->prepare($queryUpdateProductQuantity);
+                $stmtUpdateProductQuantity->bindParam(':quantity', $quantity);
+                $stmtUpdateProductQuantity->bindParam(':sold', $sold);
+                $stmtUpdateProductQuantity->bindParam(':productId', $orderDetails[0]['PRODUCT_ID']); // Lấy PRODUCT_ID từ một trong các orderDetail
+                $stmtUpdateProductQuantity->bindParam(':color', $orderDetails[0]['COLOR']); // Lấy COLOR từ một trong các orderDetail
+                $stmtUpdateProductQuantity->execute();
             }
-
-// Lưu cập nhật vào cơ sở dữ liệu
-            $queryUpdateProductQuantity = "UPDATE product_quantity SET Quantity = :quantity, Sold = :sold WHERE PRODUCT_ID = :productId AND Color = :color";
-            $stmtUpdateProductQuantity = $this->conn->prepare($queryUpdateProductQuantity);
-            $stmtUpdateProductQuantity->bindParam(':quantity', $quantity);
-            $stmtUpdateProductQuantity->bindParam(':sold', $sold);
-            $stmtUpdateProductQuantity->bindParam(':productId', $orderDetails[0]['PRODUCT_ID']); // Lấy PRODUCT_ID từ một trong các orderDetail
-            $stmtUpdateProductQuantity->bindParam(':color', $orderDetails[0]['COLOR']); // Lấy COLOR từ một trong các orderDetail
-            $stmtUpdateProductQuantity->execute();
-
-// ...
-
 
             return true;
         } catch (Exception $ex) {

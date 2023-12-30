@@ -1,7 +1,7 @@
 <?php
-
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php';
 include_once '../../model/ProductQuantity.php';

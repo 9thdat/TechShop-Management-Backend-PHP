@@ -1,7 +1,7 @@
 <?php
-
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: ');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn khi cần thiết
 include_once '../../model/OrderDetail.php'; // Điều chỉnh đường dẫn khi cần thiết
@@ -26,13 +26,13 @@ try {
         exit();
     }
 
-    // Lấy dữ liệu được gửi
-    $data = json_decode(file_get_contents("php://input"));
+    // Lấy orderId từ URL
+    $orderId = isset($_GET['orderId']) ? $_GET['orderId'] : die();
 
     // Kiểm tra xem dữ liệu có trống không
-    if (!empty($data->orderId)) {
+    if (!empty($orderId)) {
         // Gọi hàm CancelOrderDetail
-        if ($orderDetail->cancelOrderDetail($data->orderId)) {
+        if ($orderDetail->cancelOrderDetail($orderId)) {
             echo json_encode(['status' => 200, 'message' => 'Order detail canceled successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to cancel order detail.']);

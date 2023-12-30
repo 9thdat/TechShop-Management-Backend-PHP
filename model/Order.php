@@ -374,10 +374,9 @@ class Order
         $today = new DateTime('today');
         $completedStatus = 'Done';
 
-        $query = "SELECT COUNT(*) as completedCount FROM orders WHERE STATUS = :status AND COMPLETED_DATE IS NOT NULL AND COMPLETED_DATE = :completedDate";
+        $query = "SELECT COUNT(*) as completedCount FROM orders WHERE STATUS = :status AND COMPLETED_DATE IS NOT NULL AND COMPLETED_DATE = CURRENT_DATE";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':status', $completedStatus);
-        $stmt->bindParam(':completedDate', $today->format('Y-m-d'));
+        $stmt->bindParam(':status', $completedStatus, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -386,6 +385,7 @@ class Order
             return 0;
         }
     }
+
 
     public function getRevenueToday()
     {

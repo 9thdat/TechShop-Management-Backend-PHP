@@ -1,7 +1,7 @@
 <?php
-
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/User.php';
@@ -55,7 +55,7 @@ try {
 
             array_push($staffsArray, $staff_item);
         }
-        
+
         http_response_code(200);
         echo json_encode(['status' => 200, 'message' => 'OK', 'data' => $staffsArray]);
     } else {

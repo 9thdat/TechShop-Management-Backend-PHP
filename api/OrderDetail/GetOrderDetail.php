@@ -1,7 +1,7 @@
 <?php
-
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn khi cần thiết
 include_once '../../model/OrderDetail.php';
@@ -26,13 +26,13 @@ try {
         exit();
     }
 
-    // Lấy dữ liệu được gửi
-    $data = json_decode(file_get_contents("php://input"));
+    // Lấy orderId từ URL
+    $orderId = isset($_GET['orderId']) ? $_GET['orderId'] : die();
 
     // Kiểm tra nếu dữ liệu không rỗng
-    if (!empty($data->orderId)) {
+    if (!empty($orderId)) {
         // Lấy chi tiết đơn hàng dựa trên orderId
-        $orderDetails = $orderDetail->getOrderDetailsByOrderId($data->orderId);
+        $orderDetails = $orderDetail->getOrderDetailsByOrderId($orderId);
 
         // Kiểm tra xem có chi tiết đơn hàng hay không
         if ($orderDetails->rowCount() > 0) {

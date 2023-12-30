@@ -1,7 +1,18 @@
 <?php
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+// Handle preflight request
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+    header('Access-Control-Allow-Methods: GET');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Max-Age: 86400');  // Cache preflight response for 24 hours
+    http_response_code(200);
+    exit();
+}
+
+header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/Order.php';
@@ -36,5 +47,4 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 500, 'message' => 'Internal Server Error: ' . $e->getMessage()]);
 }
-
 ?>
