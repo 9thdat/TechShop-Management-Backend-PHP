@@ -41,12 +41,6 @@ try {
     $productData = $product->getProduct($productId);
     $num = $productData->rowCount();
 
-    if ($num > 0) {
-        $productData = $productData->fetch(PDO::FETCH_ASSOC);
-    } else {
-        $productData = [];
-    }
-
     // Get product quantity data
     $productQuantity = new ProductQuantity($db);
     $quantity_stmt = $productQuantity->getProductQuantity($productId);
@@ -61,12 +55,33 @@ try {
             $quantities += $QUANTITY;
         }
 
-        $productData['QUANTITY'] = $quantities;
+    }
+
+    if ($num > 0) {
+        $productArray = [];
+
+        while ($row = $productData->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $product_item = [
+                'ID' => $ID,
+                'NAME' => $NAME,
+                'PRICE' => $PRICE,
+                'DESCRIPTION' => $DESCRIPTION,
+                'CATEGORY' => $CATEGORY,
+                'BRAND' => $BRAND,
+                'PRE_DISCOUNT' => $PRE_DISCOUNT,
+                'DISCOUNT_PERCENT' => $DISCOUNT_PERCENT,
+                'IMAGE' => $IMAGE ? base64_encode($IMAGE) : null,
+                'QUANTITY' => $quantities
+            ];
+            $productArray[] = $product_item;
+        }
+
     }
 
 
     if ($num > 0) {
-        echo json_encode(['status' => 200, 'data' => $productData], JSON_PRETTY_PRINT);
+        echo json_encode(['status' => 200, 'data' => $productArray], JSON_PRETTY_PRINT);
     } else {
         http_response_code(404);
         echo json_encode(['status' => 404, 'message' => 'Product not found']);

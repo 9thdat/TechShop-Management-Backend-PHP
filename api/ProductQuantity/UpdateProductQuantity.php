@@ -3,7 +3,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include_once '../../config/db_azure.php';
+include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ProductQuantity.php';
 include_once '../../model/User.php';
 
@@ -26,26 +26,18 @@ try {
         exit();
     }
 
-    // Get parameters from the request
-    $productId = isset($_GET['productId']) ? $_GET['productId'] : die();
-    $color = isset($_GET['color']) ? $_GET['color'] : die();
+    // Get data from the request
+    $data = json_decode(file_get_contents("php://input"));
 
-    // Get total quantity
-    $totalQuantity = $productQuantity->getTotalQuantity($productId, $color);
+    // Check if data is not empty
+    if (!empty($data->id) && !empty($data->color) && isset($data->quantity)) {
+        // Update product quantity
+        $result = $productQuantity->updateProductQuantity($data->id, $data);
 
-    $num = $totalQuantity->rowCount();
-
-    if ($num === 0) {
-        // Product not found
-        http_response_code(404);
-        echo json_encode(['status' => 404, 'message' => 'Product not found']);
+        // Return JSON response
+        echo json_encode($result, JSON_PRETTY_PRINT);
     } else {
-        $row = $totalQuantity->fetch(PDO::FETCH_ASSOC);
-        extract($row);
-
-        // Return total quantity
-        http_response_code(200);
-        echo json_encode(['status' => 200, 'totalQuantity' => $totalQuantity]);
+        echo json_encode(['status' => 400, 'message' => 'Incomplete data. Please provide all required fields.']);
     }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently

@@ -334,6 +334,185 @@ class User
             return false;
         }
     }
+
+    public function getStaffs()
+    {
+        $query = "SELECT * FROM user WHERE ROLE = 'staff'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function IsEmailStaffExist($email)
+    {
+        $query = "SELECT * FROM user WHERE EMAIL = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        // Check if the email exists
+        if ($stmt->rowCount() > 0) {
+            return [
+                'status' => 409,
+                'message' => 'Email already exists'
+            ];
+        } else {
+            return [
+                'status' => 200,
+                'message' => 'Email is valid'
+            ];
+        }
+    }
+
+    public function createStaff()
+    {
+        try {
+            // Set user properties
+            $this->EMAIL = htmlspecialchars(strip_tags($this->EMAIL));
+            $this->NAME = htmlspecialchars(strip_tags($this->NAME));
+            $this->PASSWORD = htmlspecialchars(strip_tags($this->PASSWORD));
+            $this->PHONE = htmlspecialchars(strip_tags($this->PHONE));
+            $this->GENDER = htmlspecialchars(strip_tags($this->GENDER));
+            $this->BIRTHDAY = htmlspecialchars(strip_tags($this->BIRTHDAY));
+            $this->ADDRESS = htmlspecialchars(strip_tags($this->ADDRESS));
+            $this->WARD = htmlspecialchars(strip_tags($this->WARD));
+            $this->DISTRICT = htmlspecialchars(strip_tags($this->DISTRICT));
+            $this->CITY = htmlspecialchars(strip_tags($this->CITY));
+            $this->ROLE = htmlspecialchars(strip_tags($this->ROLE));
+            $this->STATUS = htmlspecialchars(strip_tags($this->STATUS));
+
+            // Check if email already exists
+            $emailExists = $this->emailExists($this->EMAIL);
+            if ($emailExists) {
+                return false; // Email already exists
+            }
+
+            // Hash the password
+            $this->PASSWORD = hash('sha256', $this->PASSWORD);
+
+            // Add user to the database
+            $query = "INSERT INTO user 
+                      (EMAIL, NAME, PASSWORD, PHONE, GENDER, BIRTHDAY, ADDRESS, WARD, DISTRICT, CITY, ROLE, STATUS) 
+                      VALUES 
+                      (:EMAIL, :NAME, :PASSWORD, :PHONE, :GENDER, :BIRTHDAY, :ADDRESS, :WARD, :DISTRICT, :CITY, :ROLE, :STATUS)";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':EMAIL', $this->EMAIL);
+            $stmt->bindParam(':NAME', $this->NAME);
+            $stmt->bindParam(':PASSWORD', $this->PASSWORD);
+            $stmt->bindParam(':PHONE', $this->PHONE);
+            $stmt->bindParam(':GENDER', $this->GENDER);
+            $stmt->bindParam(':BIRTHDAY', $this->BIRTHDAY);
+            $stmt->bindParam(':ADDRESS', $this->ADDRESS);
+            $stmt->bindParam(':WARD', $this->WARD);
+            $stmt->bindParam(':DISTRICT', $this->DISTRICT);
+            $stmt->bindParam(':CITY', $this->CITY);
+            $stmt->bindParam(':ROLE', $this->ROLE);
+            $stmt->bindParam(':STATUS', $this->STATUS);
+
+            // Execute the statement
+            if ($stmt->execute()) {
+                return true; // User created successfully
+            } else {
+                return false; // Unable to create user
+            }
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    // Check if the email already exists
+    private function emailExists($email)
+    {
+        $query = "SELECT * FROM user WHERE EMAIL = :EMAIL";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':EMAIL', $email);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0; // Return true if email exists, false otherwise
+    }
+
+    public function updateStaff()
+    {
+        try {
+            // Find the staff by email
+            $query = "SELECT * FROM user WHERE EMAIL = :email";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':email', $this->EMAIL);
+            $stmt->execute();
+            $num = $stmt->rowCount();
+
+            // Check if the staff exists
+            if ($num > 0) {
+                // Staff exists, proceed to update
+                $query = "UPDATE user 
+                          SET 
+                          NAME = :name,
+                          PHONE = :phone,
+                          ADDRESS = :address,
+                          GENDER = :gender,
+                          BIRTHDAY = :birthday,
+                          WARD = :ward,
+                          DISTRICT = :district,
+                          CITY = :city,
+                          IMAGE = :image,
+                          STATUS = :status
+                          WHERE EMAIL = :email";
+
+                $stmt = $this->conn->prepare($query);
+
+                // Bind parameters
+                $stmt->bindParam(':name', $this->NAME);
+                $stmt->bindParam(':phone', $this->PHONE);
+                $stmt->bindParam(':address', $this->ADDRESS);
+                $stmt->bindParam(':gender', $this->GENDER);
+                $stmt->bindParam(':birthday', $this->BIRTHDAY);
+                $stmt->bindParam(':ward', $this->WARD);
+                $stmt->bindParam(':district', $this->DISTRICT);
+                $stmt->bindParam(':city', $this->CITY);
+                $stmt->bindParam(':image', $this->IMAGE);
+                $stmt->bindParam(':status', $this->STATUS);
+                $stmt->bindParam(':email', $this->EMAIL);
+
+                // Execute the statement
+                $stmt->execute();
+
+                return true; // Return true if staff is updated successfully
+            } else {
+                return false; // Return false if staff is not found
+            }
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function changePassword()
+    {
+        try {
+            // Hash the password
+            $this->PASSWORD = hash('sha256', $this->PASSWORD);
+
+            // Update the password in the database
+            $query = "UPDATE user SET PASSWORD = :password WHERE EMAIL = :email";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':password', $this->PASSWORD);
+            $stmt->bindParam(':email', $this->EMAIL);
+            $stmt->execute();
+
+            return true; // Return true if the password is changed successfully
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            error_log($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
 }
 
 ?>

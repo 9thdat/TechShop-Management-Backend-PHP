@@ -131,6 +131,85 @@ class ProductQuantity
 
         return $stmt;
     }
+
+    public function addProductQuantity($productQuantity)
+    {
+        try {
+
+            // Add product quantity to the database
+            $query = "INSERT INTO product_quantity (PRODUCT_ID, COLOR, QUANTITY, SOLD) 
+                      VALUES (:PRODUCT_ID, :COLOR, :QUANTITY, :SOLD)";
+
+            // Prepare the statement
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':PRODUCT_ID', $productQuantity->productId);
+            $stmt->bindParam(':COLOR', $productQuantity->color);
+            $stmt->bindParam(':QUANTITY', $productQuantity->quantity);
+            $stmt->bindParam(':SOLD', $productQuantity->sold);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return true; // Return true if the product quantity is added successfully
+        } catch (Exception $ex) {
+            // Log the exception for debugging purposes
+            throw new Exception($ex->getMessage());
+            return false; // Return false if there's an error
+        }
+    }
+
+    public function updateProductQuantity($id, $productQuantity)
+    {
+        try {
+            $productQuantityInDb = $this->getProductQuantity($id);
+
+            if (!$productQuantityInDb) {
+                return [
+                    'status' => 404,
+                    'message' => 'Product Quantity not found'
+                ];
+            }
+
+            // Update product quantity
+            $query = "UPDATE product_quantity 
+                      SET COLOR = :color, QUANTITY = :quantity 
+                      WHERE ID = :id";
+
+            $stmt = $this->conn->prepare($query);
+
+            // Bind parameters
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':color', $productQuantity->color);
+            $stmt->bindParam(':quantity', $productQuantity->quantity);
+
+            // Execute the statement
+            $stmt->execute();
+
+            return [
+                'status' => 200,
+                'message' => 'Product Quantity updated successfully.'
+            ];
+        } catch (Exception $ex) {
+            return [
+                'status' => 500,
+                'message' => 'Internal Server Error: ' . $ex->getMessage()
+            ];
+        }
+    }
+
+    public function deleteProductQuantity($id)
+    {
+        $query = "DELETE FROM product_quantity WHERE ID = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+
+        // Execute the statement
+        $stmt->execute();
+
+        return true; // Return true if deletion is successful
+    }
 }
 
 ?>

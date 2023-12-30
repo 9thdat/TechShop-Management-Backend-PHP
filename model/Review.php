@@ -161,12 +161,29 @@ class Review
         $this->UPDATED_AT = $UPDATED_AT;
     }
 
-    public function getAllReviews()
+    public function GetAllReviews()
     {
         $query = "SELECT * FROM review";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
+    }
+
+    public function updateReview($id, $adminReply)
+    {
+        try {
+            $query = "UPDATE review SET ADMIN_REPLY = :adminReply, UPDATED_AT = NOW() WHERE ID = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':adminReply', $adminReply);
+            $stmt->bindParam(':id', $id);
+
+            $stmt->execute();
+
+            return true;
+        } catch (Exception $ex) {
+            error_log($ex->getMessage());
+            return false;
+        }
     }
 }
 
