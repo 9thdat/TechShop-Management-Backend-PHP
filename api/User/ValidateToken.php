@@ -20,10 +20,11 @@ $user = new User($db);
 try {
     // Get the token from the headers
     $allHeaders = getallheaders();
-    $token = $allHeaders['Authorization'];
+    
+    $data = json_decode(file_get_contents("php://input"));
 
     // Validate the token
-    $decodedToken = $user->validateToken($token);
+    $decodedToken = $user->validateToken($data->token);
 
     if ($decodedToken !== false) {
         // Token is valid, return the decoded claims

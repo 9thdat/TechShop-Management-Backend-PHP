@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterCable.php';
@@ -30,22 +36,22 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Check if data is not empty
-    if (!empty($data->PRODUCT_ID) && !empty($data->TECH) && !empty($data->FUNCTION) /* Add other required fields here */) {
+    if (!empty($data->productId)) {
         // Set parameterCable properties
-        $parameterCable->setPRODUCT_ID($data->PRODUCT_ID);
-        $parameterCable->setTECH($data->TECH);
-        $parameterCable->setFUNCTION($data->FUNCTION);
-        $parameterCable->setINPUT($data->INPUT);
-        $parameterCable->setOUTPUT($data->OUTPUT);
-        $parameterCable->setLENGTH($data->LENGTH);
-        $parameterCable->setMAXIMUM($data->MAXIMUM);
-        $parameterCable->setMADEIN($data->MADEIN);
-        $parameterCable->setBRANDOF($data->BRANDOF);
-        $parameterCable->setBRAND($data->BRAND);
+        $parameterCable->setPRODUCT_ID($data->productId);
+        $parameterCable->setTECH($data->tech);
+        $parameterCable->setFUNCTION($data->function);
+        $parameterCable->setINPUT($data->input);
+        $parameterCable->setOUTPUT($data->output);
+        $parameterCable->setLENGTH($data->length);
+        $parameterCable->setMAXIMUM($data->maximum);
+        $parameterCable->setMADEIN($data->madein);
+        $parameterCable->setBRANDOF($data->brandof);
+        $parameterCable->setBRAND($data->brand);
 
         // Create the parameterCable
         if ($parameterCable->addParameterCable($data)) {
-            echo json_encode(['status' => 200, 'message' => 'ParameterCable created successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'ParameterCable created successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to create ParameterCable.']);
         }

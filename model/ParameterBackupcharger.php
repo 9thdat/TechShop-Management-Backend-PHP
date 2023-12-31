@@ -270,9 +270,7 @@ class ParameterBackupcharger
         $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $parameterBackupcharger = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $parameterBackupcharger;
+        return $stmt;
     }
 
     public function addParameterBackupcharger($parameterBackupcharger)
@@ -331,19 +329,19 @@ class ParameterBackupcharger
         try {
             // Set properties from the request
             $this->ID = $id;
-            $this->PRODUCT_ID = $parameterBackupcharger->PRODUCT_ID;
-            $this->EFFICIENCY = $parameterBackupcharger->EFFICIENCY;
-            $this->CAPACITY = $parameterBackupcharger->CAPACITY;
-            $this->TIMEFULLCHARGE = $parameterBackupcharger->TIMEFULLCHARGE;
-            $this->INPUT = $parameterBackupcharger->INPUT;
-            $this->OUTPUT = $parameterBackupcharger->OUTPUT;
-            $this->CORE = $parameterBackupcharger->CORE;
-            $this->TECH = $parameterBackupcharger->TECH;
-            $this->SIZE = $parameterBackupcharger->SIZE;
-            $this->WEIGHT = $parameterBackupcharger->WEIGHT;
-            $this->MADEIN = $parameterBackupcharger->MADEIN;
-            $this->BRANDOF = $parameterBackupcharger->BRANDOF;
-            $this->BRAND = $parameterBackupcharger->BRAND;
+            $this->PRODUCT_ID = $parameterBackupcharger->productId;
+            $this->EFFICIENCY = $parameterBackupcharger->efficiency;
+            $this->CAPACITY = $parameterBackupcharger->capacity;
+            $this->TIMEFULLCHARGE = $parameterBackupcharger->timefullcharge;
+            $this->INPUT = $parameterBackupcharger->input;
+            $this->OUTPUT = $parameterBackupcharger->output;
+            $this->CORE = $parameterBackupcharger->core;
+            $this->TECH = $parameterBackupcharger->tech;
+            $this->SIZE = $parameterBackupcharger->size;
+            $this->WEIGHT = $parameterBackupcharger->weight;
+            $this->MADEIN = $parameterBackupcharger->madein;
+            $this->BRANDOF = $parameterBackupcharger->brandof;
+            $this->BRAND = $parameterBackupcharger->brand;
 
             // Update the database
             $query = "UPDATE parameter_backupcharger

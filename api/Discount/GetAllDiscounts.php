@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-type: text/html; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -34,8 +35,39 @@ try {
     // Fetch all discounts
     $allDiscounts = $discount->getAllDiscounts();
 
+    $num = $allDiscounts->rowCount();
+
+    if ($num > 0) {
+        $discounts_arr = array();
+
+        while ($row = $allDiscounts->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+
+            $discount_item = array(
+                'id' => $ID,
+                'code' => $CODE,
+                'type' => $TYPE,
+                'value' => $VALUE,
+                'description' => $DESCRIPTION,
+                'startDate' => $START_DATE,
+                'endDate' => $END_DATE,
+                'minApply' => $MIN_APPLY,
+                'maxSpeed' => $MAX_SPEED,
+                'quantity' => $QUANTITY,
+                'status' => $STATUS,
+                'createdAt' => $CREATED_AT,
+                'updatedAt' => $UPDATED_AT,
+                'disabledAt' => $DISABLED_AT
+            );
+
+            array_push($discounts_arr, $discount_item);
+        }
+    } else {
+        $discounts_arr = [];
+    }
+
     // Return a JSON response with all discounts
-    echo json_encode(['status' => 200, 'data' => $allDiscounts], JSON_PRETTY_PRINT);
+    echo json_encode(['status' => 200, 'data' => $discounts_arr], JSON_PRETTY_PRINT);
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
     http_response_code(500);

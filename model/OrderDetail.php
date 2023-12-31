@@ -149,11 +149,11 @@ class OrderDetail
     {
         try {
             // Set order detail properties
-            $this->ORDER_ID = $orderDetail->OrderId;
-            $this->PRODUCT_ID = $orderDetail->ProductId;
-            $this->COLOR = $orderDetail->Color;
-            $this->QUANTITY = $orderDetail->Quantity;
-            $this->PRICE = $orderDetail->Price;
+            $this->ORDER_ID = $orderDetail->orderId;
+            $this->PRODUCT_ID = $orderDetail->productId;
+            $this->COLOR = $orderDetail->color;
+            $this->QUANTITY = $orderDetail->quantity;
+            $this->PRICE = $orderDetail->price;
 
             // Create new OrderDetail object
             $newOrderDetail = new OrderDetail($this->conn);
@@ -174,6 +174,11 @@ class OrderDetail
 
             $productQuantityInDb = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            if (!$productQuantityInDb) {
+                return false;
+            }
+
+
             $quantity = $productQuantityInDb['QUANTITY'] - $this->QUANTITY;
             $sold = $productQuantityInDb['SOLD'] + $this->QUANTITY;
 
@@ -184,7 +189,6 @@ class OrderDetail
             $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
             $stmt->bindParam(':COLOR', $this->COLOR);
             $stmt->execute();
-
             // Add order detail to the database
             $query = "INSERT INTO order_detail (ORDER_ID, PRODUCT_ID, COLOR, QUANTITY, PRICE) VALUES (:ORDER_ID, :PRODUCT_ID, :COLOR, :QUANTITY, :PRICE)";
             $stmt = $this->conn->prepare($query);

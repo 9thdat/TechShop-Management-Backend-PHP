@@ -30,7 +30,7 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Kiểm tra xem dữ liệu có đầy đủ không
-    if (!empty($data->name) && !empty($data->price) && !empty($data->description) && !empty($data->image) && !empty($data->category) && !empty($data->brand) && !empty($data->preDiscount) && !empty($data->discountPercent)) {
+    if (!empty($data->name) && !empty($data->price) && !empty($data->category) && !empty($data->brand) && !empty($data->preDiscount) && !empty($data->discountPercent)) {
         // Gọi hàm thêm sản phẩm
         if ($product->addProduct($data)) {
             echo json_encode(['status' => 200, 'message' => 'Product created successfully.']);

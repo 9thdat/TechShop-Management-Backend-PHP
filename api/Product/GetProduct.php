@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/Product.php';
@@ -63,16 +69,16 @@ try {
         while ($row = $productData->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
             $product_item = [
-                'ID' => $ID,
-                'NAME' => $NAME,
-                'PRICE' => $PRICE,
-                'DESCRIPTION' => $DESCRIPTION,
-                'CATEGORY' => $CATEGORY,
-                'BRAND' => $BRAND,
-                'PRE_DISCOUNT' => $PRE_DISCOUNT,
-                'DISCOUNT_PERCENT' => $DISCOUNT_PERCENT,
-                'IMAGE' => $IMAGE ? base64_encode($IMAGE) : null,
-                'QUANTITY' => $quantities
+                'id' => $ID,
+                'name' => $NAME,
+                'price' => $PRICE,
+                'description' => $DESCRIPTION,
+                'category' => $CATEGORY,
+                'brand' => $BRAND,
+                'preDiscount' => $PRE_DISCOUNT,
+                'discountPercent' => $DISCOUNT_PERCENT,
+                'image' => $IMAGE ? base64_encode($IMAGE) : null,
+                'quantity' => $quantities
             ];
             $productArray[] = $product_item;
         }
@@ -81,7 +87,7 @@ try {
 
 
     if ($num > 0) {
-        echo json_encode(['status' => 200, 'data' => $productArray], JSON_PRETTY_PRINT);
+        echo json_encode(['status' => 200, 'data' => $productArray[0]], JSON_PRETTY_PRINT);
     } else {
         http_response_code(404);
         echo json_encode(['status' => 404, 'message' => 'Product not found']);

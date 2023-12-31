@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/Product.php';
@@ -30,10 +36,10 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Check if data is not empty
-    if (!empty($data->id) && !empty($data->name) && !empty($data->price) && !empty($data->description) && !empty($data->image) && !empty($data->category) && !empty($data->brand) && !empty($data->preDiscount) && !empty($data->discountPercent)) {
+    if (!empty($data->id) && !empty($data->name)) {
         // Update the product
         if ($product->updateProduct($data->id, $data)) {
-            echo json_encode(['status' => 200, 'message' => 'Product updated successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'Product updated successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to update product.']);
         }

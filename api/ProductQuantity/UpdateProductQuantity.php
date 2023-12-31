@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ProductQuantity.php';
@@ -35,9 +41,11 @@ try {
         $result = $productQuantity->updateProductQuantity($data->id, $data);
 
         // Return JSON response
-        echo json_encode($result, JSON_PRETTY_PRINT);
-    } else {
-        echo json_encode(['status' => 400, 'message' => 'Incomplete data. Please provide all required fields.']);
+        if ($result) {
+            echo json_encode(['status' => 204, 'message' => 'Product quantity updated successfully.']);
+        } else {
+            echo json_encode(['status' => 500, 'message' => 'Unable to update product quantity.']);
+        }
     }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently

@@ -226,16 +226,16 @@ class ParameterCable
     {
         try {
             // Set parameterCable properties
-            $this->PRODUCT_ID = $parameterCable->PRODUCT_ID;
-            $this->TECH = $parameterCable->TECH;
-            $this->FUNCTION = $parameterCable->FUNCTION;
-            $this->INPUT = $parameterCable->INPUT;
-            $this->OUTPUT = $parameterCable->OUTPUT;
-            $this->LENGTH = $parameterCable->LENGTH;
-            $this->MAXIMUM = $parameterCable->MAXIMUM;
-            $this->MADEIN = $parameterCable->MADEIN;
-            $this->BRANDOF = $parameterCable->BRANDOF;
-            $this->BRAND = $parameterCable->BRAND;
+            $this->PRODUCT_ID = $parameterCable->productId;
+            $this->TECH = $parameterCable->tech;
+            $this->FUNCTION = $parameterCable->function;
+            $this->INPUT = $parameterCable->input;
+            $this->OUTPUT = $parameterCable->output;
+            $this->LENGTH = $parameterCable->length;
+            $this->MAXIMUM = $parameterCable->maximum;
+            $this->MADEIN = $parameterCable->madein;
+            $this->BRANDOF = $parameterCable->brandof;
+            $this->BRAND = $parameterCable->brand;
 
             // Add parameterCable to the database
             $query = "INSERT INTO parameter_cable 
@@ -272,17 +272,17 @@ class ParameterCable
     {
         try {
             // Set các thuộc tính của ParameterCable
-            $this->ID = $parameterCable->ID;
-            $this->PRODUCT_ID = $parameterCable->PRODUCT_ID;
-            $this->TECH = $parameterCable->TECH;
-            $this->FUNCTION = $parameterCable->FUNCTION;
-            $this->INPUT = $parameterCable->INPUT;
-            $this->OUTPUT = $parameterCable->OUTPUT;
-            $this->LENGTH = $parameterCable->LENGTH;
-            $this->MAXIMUM = $parameterCable->MAXIMUM;
-            $this->MADEIN = $parameterCable->MADEIN;
-            $this->BRANDOF = $parameterCable->BRANDOF;
-            $this->BRAND = $parameterCable->BRAND;
+            $this->ID = $parameterCable->id;
+            $this->PRODUCT_ID = $parameterCable->productId;
+            $this->TECH = $parameterCable->tech;
+            $this->FUNCTION = $parameterCable->function;
+            $this->INPUT = $parameterCable->input;
+            $this->OUTPUT = $parameterCable->output;
+            $this->LENGTH = $parameterCable->length;
+            $this->MAXIMUM = $parameterCable->maximum;
+            $this->MADEIN = $parameterCable->madein;
+            $this->BRANDOF = $parameterCable->brandof;
+            $this->BRAND = $parameterCable->brand;
 
             // Cập nhật ParameterCable trong cơ sở dữ liệu
             $query = "UPDATE parameter_cable 

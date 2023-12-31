@@ -1,7 +1,8 @@
 <?php
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -35,24 +36,14 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     // Check if data is not empty
-    if (!empty($data['id']) &&
-        !empty($data['code']) &&
-        !empty($data['type']) &&
-        isset($data['value']) &&
-        !empty($data['description']) &&
-        !empty($data['startDate']) &&
-        !empty($data['endDate']) &&
-        isset($data['minApply']) &&
-        isset($data['maxSpeed']) &&
-        isset($data['quantity']) &&
-        !empty($data['status'])
+    if (!empty($data['id'])
     ) {
         // Set Discount properties
         $discount->setId($data['id']);
         $discount->setCode($data['code']);
         $discount->setType($data['type']);
         $discount->setValue($data['value']);
-        $discount->setDescription($data['description']);
+        $discount->setDescription($data['description'] ?? ''); // Default value is ''
         $discount->setSTART_DATE($data['startDate']);
         $discount->setEND_DATE($data['endDate']);
         $discount->setMIN_APPLY($data['minApply']);
@@ -74,8 +65,8 @@ try {
             $result = $discount->updateDiscount($data);
 
             if ($result) {
-                http_response_code(200);
-                echo json_encode(['status' => 200, 'message' => 'Discount updated successfully']);
+                http_response_code(204);
+                echo json_encode(['status' => 204, 'message' => 'Discount updated successfully']);
             } else {
                 http_response_code(500);
                 echo json_encode(['status' => 500, 'message' => 'Internal Server Error']);

@@ -224,7 +224,7 @@ class Product
             $this->NAME = $data->name;
             $this->PRICE = $data->price;
             $this->DESCRIPTION = $data->description;
-            $this->IMAGE = $data->image;
+            $this->IMAGE = base64_decode($data->image) ?? "";
             $this->CATEGORY = $data->category;
             $this->BRAND = $data->brand;
             $this->PRE_DISCOUNT = $data->preDiscount;
@@ -278,13 +278,13 @@ class Product
             // Set product properties
             $this->ID = $id;
             $this->NAME = $product->name;
-            $this->PRICE = $product->price;
-            $this->DESCRIPTION = $product->description;
-            $this->IMAGE = $product->image;
-            $this->CATEGORY = $product->category;
-            $this->BRAND = $product->brand;
-            $this->PRE_DISCOUNT = $product->preDiscount;
-            $this->DISCOUNT_PERCENT = $product->discountPercent;
+            $this->PRICE = $product->price ?? "";
+            $this->DESCRIPTION = $product->description ?? "";
+            $this->IMAGE = base64_decode($product->image) ?? "";
+            $this->CATEGORY = $product->category ?? 1;
+            $this->BRAND = $product->brand ?? "";
+            $this->PRE_DISCOUNT = $product->preDiscount ?? "";
+            $this->DISCOUNT_PERCENT = $product->discountPercent ?? "";
 
             // Update the product in the database
             $query = "UPDATE product 

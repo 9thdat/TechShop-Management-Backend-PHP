@@ -2,10 +2,16 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn khi cần thiết
 include_once '../../model/OrderDetail.php';
 include_once '../../model/User.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $database = new db();
 $db = $database->connect();
@@ -43,22 +49,22 @@ try {
                 extract($row);
 
                 $orderDetailItem = array(
-                    'ID' => $ID,
-                    'ORDER_ID' => $ORDER_ID,
-                    'PRODUCT_ID' => $PRODUCT_ID,
-                    'COLOR' => $COLOR,
-                    'QUANTITY' => $QUANTITY,
-                    'PRICE' => $PRICE
+                    'id' => $ID,
+                    'orderId' => $ORDER_ID,
+                    'productId' => $PRODUCT_ID,
+                    'color' => $COLOR,
+                    'quantity' => $QUANTITY,
+                    'price' => $PRICE
                 );
 
                 array_push($array, $orderDetailItem);
             }
 
             // Trả về một JSON response với chi tiết đơn hàng
-            echo json_encode(['status' => 200, 'data' => $array], JSON_PRETTY_PRINT);
+            echo json_encode(['status' => 200, 'data' => $array], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         } else {
             // Không có chi tiết đơn hàng nào được tìm thấy
-            echo json_encode(['status' => 404, 'message' => 'Order details not found']);
+            echo json_encode(['status' => 404, 'data' => []]);
         }
     } else {
         // Dữ liệu không đầy đủ

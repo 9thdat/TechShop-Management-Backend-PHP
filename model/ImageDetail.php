@@ -124,16 +124,13 @@ class ImageDetail
     {
         // Check if required data is provided
         if (
-            !empty($data['PRODUCT_ID']) &&
-            !empty($data['COLOR']) &&
-            !empty($data['ORDINAL']) &&
-            !empty($data['IMAGE'])
+            !empty($data['productId'])
         ) {
             // Set properties
-            $this->setPRODUCT_ID($data['PRODUCT_ID']);
-            $this->setColor($data['COLOR']);
-            $this->setOrdinal($data['ORDINAL']);
-            $this->setImage($data['IMAGE']);
+            $this->setPRODUCT_ID($data['productId']);
+            $this->setColor($data['color']);
+            $this->setOrdinal($data['ordinal']);
+            $this->setImage($data['image']);
 
             // Perform the insert query
             $query = "INSERT INTO image_detail (PRODUCT_ID, COLOR, ORDINAL, IMAGE) 
@@ -145,7 +142,7 @@ class ImageDetail
             $stmt->bindParam(':PRODUCT_ID', $this->PRODUCT_ID);
             $stmt->bindParam(':COLOR', $this->COLOR);
             $stmt->bindParam(':ORDINAL', $this->ORDINAL);
-            $stmt->bindParam(':IMAGE', $this->IMAGE);
+            $stmt->bindParam(':IMAGE', base64_decode($this->IMAGE));
 
             // Execute the query
             if ($stmt->execute()) {

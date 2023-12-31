@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterCable.php';
@@ -40,7 +46,22 @@ try {
 
     // Check if any parameter cables were found
     if ($parameterCables->rowCount() > 0) {
-        $parameterCablesArray = $parameterCables->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($parameterCables as $row) {
+            extract($row);
+            $parameterCablesArray = array(
+                'id' => $ID,
+                'productId' => $PRODUCT_ID,
+                'tech' => $TECH,
+                'function' => $FUNCTION,
+                'input' => $INPUT,
+                'output' => $OUTPUT,
+                'length' => $LENGTH,
+                'maximum' => $MAXIMUM,
+                'madein' => $MADEIN,
+                'brandof' => $BRANDOF,
+                'brand' => $BRAND,
+            );
+        }
         echo json_encode(['status' => 200, 'data' => $parameterCablesArray], JSON_PRETTY_PRINT);
     } else {
         // No parameter cables found for the given product ID

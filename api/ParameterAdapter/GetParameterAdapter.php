@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn theo cần thiết
 include_once '../../model/ParameterAdapter.php';
@@ -37,9 +43,26 @@ try {
         $num = $result->rowCount();
 
         if ($num > 0) {
-            // Lấy dữ liệu và trả về JSON
-            $parameterAdapters = $result->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode(['status' => 200, 'data' => $parameterAdapters], JSON_PRETTY_PRINT);
+            foreach ($result as $row) {
+                extract($row);
+                $parameterAdapterItem = array(
+                    'id' => $ID,
+                    'productId' => $PRODUCT_ID,
+                    'model' => $MODEL,
+                    'function' => $FUNCTION,
+                    'input' => $INPUT,
+                    'output' => $OUTPUT,
+                    'maximum' => $MAXIMUM,
+                    'size' => $SIZE,
+                    'tech' => $TECH,
+                    'madein' => $MADEIN,
+                    'brandof' => $BRANDOF,
+                    'brand' => $BRAND,
+                );
+            }
+
+// Trả về một JSON response với danh sách parameter adapter
+            echo json_encode(['status' => 200, 'data' => $parameterAdapterItem]);
         } else {
             // Không tìm thấy parameter adapter nào
             echo json_encode(['status' => 404, 'message' => 'No parameter adapters found for the specified product ID.']);

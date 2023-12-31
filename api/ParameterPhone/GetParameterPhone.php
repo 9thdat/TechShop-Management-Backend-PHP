@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterPhone.php';
@@ -33,8 +39,33 @@ try {
         // Fetch parameter phones by product ID
         $result = $parameterPhone->GetParameterPhone($productId);
 
-        // Return the result as JSON
-        echo json_encode($result, JSON_PRETTY_PRINT);
+        $num = $result->rowCount();
+
+        if ($num > 0) {
+            foreach ($result as $row) {
+                extract($row);
+                $parameterPhone_item = array(
+                    'id' => $ID,
+                    'productId' => $PRODUCT_ID,
+                    'screen' => $SCREEN,
+                    'operatingSystem' => $OPERATING_SYSTEM,
+                    'backCamera' => $BACK_CAMERA,
+                    'frontCamera' => $FRONT_CAMERA,
+                    'chip' => $CHIP,
+                    'ram' => $RAM,
+                    'rom' => $ROM,
+                    'sim' => $SIM,
+                    'batteryCharger' => $BATTERY_CHARGER,
+                );
+                // Push to "data"}
+
+                // Turn to JSON & output
+                echo json_encode(['status' => 200, 'data' => $parameterPhone_item], JSON_PRETTY_PRINT);
+            }
+        } else {
+            // No parameter phones found for the given product ID
+            echo json_encode(['status' => 404, 'message' => 'No parameter phones found for the given product ID']);
+        }
     } else {
         // Product ID is missing
         echo json_encode(['status' => 400, 'message' => 'Product ID is required']);

@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -38,14 +39,14 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Set image detail properties
-    $imageDetail->setPRODUCT_ID($data->PRODUCT_ID);
-    $imageDetail->setColor($data->COLOR);
-    $imageDetail->setOrdinal($data->ORDINAL);
-    $imageDetail->setImage($data->IMAGE);
+    $imageDetail->setPRODUCT_ID($data->productId);
+    $imageDetail->setColor($data->color);
+    $imageDetail->setOrdinal($data->ordinal);
+    $imageDetail->setImage(base64_decode($data->image));
 
     // Update the image detail
     if ($imageDetail->updateImageDetail($id, $imageDetail)) {
-        echo json_encode(['status' => 200, 'message' => 'Image detail updated successfully.']);
+        echo json_encode(['status' => 204, 'message' => 'Image detail updated successfully.']);
     } else {
         echo json_encode(['status' => 500, 'message' => 'Unable to update image detail.']);
     }

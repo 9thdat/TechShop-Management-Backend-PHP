@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -33,26 +34,27 @@ try {
 
     // Get posted data
     $data = json_decode(file_get_contents("php://input"), true);
+    $currentDate = date('Y-m-d H:i:s');
 
     // Set Discount properties
     $discount->setID($data['id']);
     $discount->setCode($data['code']);
     $discount->setTYPE($data['type']);
     $discount->setValue($data['value']);
-    $discount->setDESCRIPTION($data['description']);
+    $discount->setDESCRIPTION($data['description'] || ''); // Default value is ''
     $discount->setSTART_DATE($data['startDate']);
     $discount->setEND_DATE($data['endDate']);
     $discount->setMIN_APPLY($data['minApply']);
     $discount->setMAX_SPEED($data['maxSpeed']);
     $discount->setQUANTITY($data['quantity']);
     $discount->setSTATUS($data['status']);
-    $discount->setCREATED_AT($data['createdAt']);
-    $discount->setDISABLED_AT($data['updatedAt']);
-    $discount->setDISABLED_AT($data['disabledAt']);
+    $discount->setCREATED_AT($currentDate);
+    $discount->setUPDATED_AT($currentDate);
+    $discount->setDISABLED_AT($data['endDate'] || '');
 
 
     // Get current date
-    $currentDate = date('Y-m-d H:i:s');
+
     if ($discount->getSTATUS() !== 'inactive') {
         if ($discount->getEND_DATE() < $currentDate) {
             $discount->setStatus('expired');
@@ -64,7 +66,7 @@ try {
     }
 
     // Create the Discount
-    if ($discount->createDiscount($data)) {
+    if ($discount->createDiscount($discount)) {
         echo json_encode(['status' => 201, 'message' => 'Discount created successfully.']);
     } else {
         echo json_encode(['status' => 500, 'message' => 'Unable to create Discount.']);

@@ -35,18 +35,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 // Check if data is not empty
 if (
-    !empty($data->email) &&
-    !empty($data->name) &&
-    !empty($data->password) &&
-    !empty($data->phone) &&
-    !empty($data->gender) &&
-    !empty($data->birthday) &&
-    !empty($data->address) &&
-    !empty($data->ward) &&
-    !empty($data->district) &&
-    !empty($data->city) &&
-    isset($data->image) &&
-    !empty($data->status)
+    !empty($data->email)
 ) {
     // Set Customer properties
     $customer->setEmail($data->email);

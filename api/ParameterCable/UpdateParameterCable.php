@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn nếu cần thiết
 include_once '../../model/ParameterCable.php';
@@ -30,22 +36,22 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Kiểm tra nếu dữ liệu không rỗng
-    if (!empty($data->ID) && !empty($data->PRODUCT_ID) && !empty($data->TECH) && !empty($data->FUNCTION) && !empty($data->INPUT) && !empty($data->OUTPUT) && !empty($data->LENGTH) && !empty($data->MAXIMUM) && !empty($data->MADEIN) && !empty($data->BRANDOF) && !empty($data->BRAND)) {
-        $parameterCable->setID($data->ID);
-        $parameterCable->setPRODUCT_ID($data->PRODUCT_ID);
-        $parameterCable->setTECH($data->TECH);
-        $parameterCable->setFUNCTION($data->FUNCTION);
-        $parameterCable->setINPUT($data->INPUT);
-        $parameterCable->setOUTPUT($data->OUTPUT);
-        $parameterCable->setLENGTH($data->LENGTH);
-        $parameterCable->setMAXIMUM($data->MAXIMUM);
-        $parameterCable->setMADEIN($data->MADEIN);
-        $parameterCable->setBRANDOF($data->BRANDOF);
-        $parameterCable->setBRAND($data->BRAND);
+    if (!empty($data->id) && !empty($data->productId)) {
+        $parameterCable->setID($data->id);
+        $parameterCable->setPRODUCT_ID($data->productId);
+        $parameterCable->setTECH($data->tech);
+        $parameterCable->setFUNCTION($data->function);
+        $parameterCable->setINPUT($data->input);
+        $parameterCable->setOUTPUT($data->output);
+        $parameterCable->setLENGTH($data->length);
+        $parameterCable->setMAXIMUM($data->maximum);
+        $parameterCable->setMADEIN($data->madein);
+        $parameterCable->setBRANDOF($data->brandof);
+        $parameterCable->setBRAND($data->brand);
 
         // Gọi hàm cập nhật ParameterCable
         if ($parameterCable->updateParameterCable($data)) {
-            echo json_encode(['status' => 200, 'message' => 'ParameterCable updated successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'ParameterCable updated successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to update ParameterCable.']);
         }

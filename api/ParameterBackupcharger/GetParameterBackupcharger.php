@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Điều chỉnh đường dẫn nếu cần
 include_once '../../model/ParameterBackupcharger.php';
@@ -31,9 +37,31 @@ try {
 
     // Lấy thông số của backup charger theo product ID
     $result = $parameterBackupcharger->getParameterBackupchargerByProductId($productId);
+    $num = $result->rowCount();
 
     if (!empty($result)) {
-        echo json_encode(['status' => 200, 'data' => $result], JSON_PRETTY_PRINT);
+        foreach ($result as $row) {
+            extract($row);
+            $parameterBackupchargerItem = array(
+                'id' => $ID,
+                'productId' => $PRODUCT_ID,
+                'efficiency' => $EFFICIENCY,
+                'capacity' => $CAPACITY,
+                'timefullcharge' => $TIMEFULLCHARGE,
+                'input' => $INPUT,
+                'output' => $OUTPUT,
+                'core' => $CORE,
+                'tech' => $TECH,
+                'size' => $SIZE,
+                'weight' => $WEIGHT,
+                'madein' => $MADEIN,
+                'brandof' => $BRANDOF,
+                'brand' => $BRAND,
+            );
+        }
+
+        echo json_encode(['status' => 200, 'data' => $parameterBackupchargerItem]);
+
     } else {
         echo json_encode(['status' => 404, 'message' => 'Parameter Backupcharger not found']);
     }

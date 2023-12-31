@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterPhone.php';
@@ -30,10 +36,10 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Check if data is not empty
-    if (!empty($data->productId) && !empty($data->screen) && !empty($data->operatingSystem) && !empty($data->backCamera) && !empty($data->frontCamera) && !empty($data->chip) && !empty($data->ram) && !empty($data->rom) && !empty($data->sim) && !empty($data->batteryCharger)) {
+    if (!empty($data->productId)) {
         // Set parameter phone properties and create the parameter phone
         if ($parameterPhone->addParameterPhone($data)) {
-            echo json_encode(['status' => 200, 'message' => 'Parameter phone created successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'Parameter phone created successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to create parameter phone.']);
         }

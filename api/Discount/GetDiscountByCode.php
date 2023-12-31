@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -44,8 +45,37 @@ try {
     // Proceed to fetch the Discount
     $discountData = $discount->getDiscountByCode($code);
 
-    // Return a JSON response with the Discount data
-    echo json_encode($discountData, JSON_PRETTY_PRINT);
+    $num = $discountData->rowCount();
+
+    if ($num === 0) {
+        // Discount not found
+        http_response_code(404);
+        echo json_encode(['status' => 404, 'message' => 'Discount not found']);
+    } else {
+        foreach ($discountData as $row) {
+            extract($row);
+
+            $result = array(
+                'id' => $ID,
+                'code' => $CODE,
+                'type' => $TYPE,
+                'value' => $VALUE,
+                'description' => $DESCRIPTION,
+                'startDate' => $START_DATE,
+                'endDate' => $END_DATE,
+                'minApply' => $MIN_APPLY,
+                'maxSpeed' => $MAX_SPEED,
+                'quantity' => $QUANTITY,
+                'status' => $STATUS,
+                'createdAt' => $CREATED_AT,
+                'updatedAt' => $UPDATED_AT,
+                'disabledAt' => $DISABLED_AT,
+            );
+        }
+
+        // Return a JSON response with the Discount data
+        echo json_encode(['status' => 200, 'data' => $result], JSON_PRETTY_PRINT);
+    }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
     http_response_code(500);

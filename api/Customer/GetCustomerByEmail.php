@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -31,18 +32,44 @@ try {
         exit();
     }
 
-    // Check if the required data is provided
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    // Assuming that 'email' is a required field
-    if (!empty($data['email'])) {
-        $email = $data['email'];
+    if (isset($_GET['email'])) {
+        // Get the email from the URL
+        $email = $_GET['email'];
 
         // Proceed to get Customer by email
         $customerData = $customer->GetCustomerByEmail($email);
+        $num = $customerData->rowCount();
 
-        // Return a JSON response with the Customer data
-        echo json_encode($customerData, JSON_PRETTY_PRINT);
+        if ($num > 0) {
+            $result = array();
+
+            foreach ($customerData as $row) {
+                extract($row);
+
+                $customer_item = array(
+                    'email' => $EMAIL,
+                    'name' => $NAME,
+                    'password' => "",
+                    'phone' => $PHONE,
+                    'gender' => $GENDER,
+                    'birthday' => $BIRTHDAY,
+                    'address' => $ADDRESS,
+                    'ward' => $WARD,
+                    'district' => $DISTRICT,
+                    'city' => $CITY,
+                    'image' => base64_encode($IMAGE),
+                    'status' => $STATUS
+                );
+            }
+
+            http_response_code(200);
+            echo json_encode(['status' => 200, 'data' => $customer_item], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => 404, 'message' => 'Customer not found']);
+        }
+
+
     } else {
         echo json_encode(['status' => 400, 'message' => 'Email is required.']);
     }

@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterBackupcharger.php';
@@ -30,25 +36,25 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Check if data is not empty
-    if (!empty($data->PRODUCT_ID) /* Add other required fields here */) {
+    if (!empty($data->productId) /* Add other required fields here */) {
         // Set ParameterBackupcharger properties
-        $parameterBackupcharger->setPRODUCT_ID($data->PRODUCT_ID);
-        $parameterBackupcharger->setEFFICIENCY($data->EFFICIENCY);
-        $parameterBackupcharger->setCAPACITY($data->CAPACITY);
-        $parameterBackupcharger->setTIMEFULLCHARGE($data->TIMEFULLCHARGE);
-        $parameterBackupcharger->setINPUT($data->INPUT);
-        $parameterBackupcharger->setOUTPUT($data->OUTPUT);
-        $parameterBackupcharger->setCORE($data->CORE);
-        $parameterBackupcharger->setTECH($data->TECH);
-        $parameterBackupcharger->setSIZE($data->SIZE);
-        $parameterBackupcharger->setWEIGHT($data->WEIGHT);
-        $parameterBackupcharger->setMADEIN($data->MADEIN);
-        $parameterBackupcharger->setBRANDOF($data->BRANDOF);
-        $parameterBackupcharger->setBRAND($data->BRAND);
+        $parameterBackupcharger->setPRODUCT_ID($data->productId);
+        $parameterBackupcharger->setEFFICIENCY($data->efficiency);
+        $parameterBackupcharger->setCAPACITY($data->capacity);
+        $parameterBackupcharger->setTIMEFULLCHARGE($data->timefullcharge);
+        $parameterBackupcharger->setINPUT($data->input);
+        $parameterBackupcharger->setOUTPUT($data->output);
+        $parameterBackupcharger->setCORE($data->core);
+        $parameterBackupcharger->setTECH($data->tech);
+        $parameterBackupcharger->setSIZE($data->size);
+        $parameterBackupcharger->setWEIGHT($data->weight);
+        $parameterBackupcharger->setMADEIN($data->madein);
+        $parameterBackupcharger->setBRANDOF($data->brandof);
+        $parameterBackupcharger->setBRAND($data->brand);
 
         // Create the ParameterBackupcharger
-        if ($parameterBackupcharger->addParameterBackupcharger($data)) {
-            echo json_encode(['status' => 200, 'message' => 'ParameterBackupcharger created successfully.']);
+        if ($parameterBackupcharger->addParameterBackupcharger($parameterBackupcharger)) {
+            echo json_encode(['status' => 204, 'message' => 'ParameterBackupcharger created successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to create ParameterBackupcharger.']);
         }

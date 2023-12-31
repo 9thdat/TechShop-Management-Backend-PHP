@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
 // Respond to preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -38,7 +39,7 @@ try {
     if ($email) {
         // Proceed to change the status
         if ($customer->changeStatus($email)) {
-            echo json_encode(['status' => 200, 'message' => 'Status changed successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'Status changed successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to change status.']);
         }

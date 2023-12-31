@@ -220,11 +220,7 @@ class ParameterPhone
         $stmt->execute();
 
         // Check if any parameter phones are found
-        if ($stmt->rowCount() > 0) {
-            return ['status' => 200, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
-        } else {
-            return ['status' => 404, 'message' => 'No parameters found for the given product ID'];
-        }
+        return $stmt;
     }
 
     public function addParameterPhone($data)

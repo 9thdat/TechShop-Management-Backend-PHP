@@ -245,54 +245,54 @@ class Customer
         $stmt->bindParam(':email', $email);
         $stmt->execute();
 
-        // Check is the email exists
-        if ($stmt->rowCount() > 0) {
-            return [
-                'status' => 200,
-                'data' => $stmt->fetch(PDO::FETCH_ASSOC)
-            ];
-        } else {
-            return [
-                'status' => 404,
-                'message' => 'Email not found'
-            ];
-        }
+        return $stmt;
     }
 
     public function createCustomer()
     {
+        // Hash the password using SHA-256 (replace "hash" with your actual hashing method)
+        $this->setPassword(hash('sha256', $this->getPassword()));
+
+        $email = $this->getEmail();
+        $name = $this->getName();
+        $password = $this->getPassword();
+        $phone = $this->getPhone();
+        $gender = $this->getGender();
+        $birthday = $this->getBirthday();
+        $address = $this->getAddress();
+        $ward = $this->getWard();
+        $district = $this->getDistrict();
+        $city = $this->getCity();
+        $image = base64_decode($this->getImage());
+        $status = $this->getStatus();
+
         try {
             $query = "SELECT * FROM Customer WHERE EMAIL = :email";
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':email', $this->getEmail());
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
 
             $existingCustomer = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$existingCustomer) {
-                // Email is unique, proceed to create the Customer
-
-                // Hash the password using SHA-256 (replace "hash" with your actual hashing method)
-                $this->setPassword(hash('sha256', $this->getPassword()));
-
                 // Insert Customer data into the database
                 $query = "INSERT INTO Customer (EMAIL, NAME, PASSWORD, PHONE, GENDER, BIRTHDAY, ADDRESS, WARD, DISTRICT, CITY, IMAGE, STATUS) 
                           VALUES (:email, :name, :password, :phone, :gender, :birthday, :address, :ward, :district, :city, :image, :status)";
 
                 $stmt = $this->conn->prepare($query);
 
-                $stmt->bindParam(':email', $this->getEmail());
-                $stmt->bindParam(':name', $this->getName());
-                $stmt->bindParam(':password', $this->getPassword());
-                $stmt->bindParam(':phone', $this->getPhone());
-                $stmt->bindParam(':gender', $this->getGender());
-                $stmt->bindParam(':birthday', $this->getBirthday());
-                $stmt->bindParam(':address', $this->getAddress());
-                $stmt->bindParam(':ward', $this->getWard());
-                $stmt->bindParam(':district', $this->getDistrict());
-                $stmt->bindParam(':city', $this->getCity());
-                $stmt->bindParam(':image', $this->getImage());
-                $stmt->bindParam(':status', $this->getStatus());
+                $stmt->bindParam(':email', $email);
+                $stmt->bindParam(':name', $name);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':phone', $phone);
+                $stmt->bindParam(':gender', $gender);
+                $stmt->bindParam(':birthday', $birthday);
+                $stmt->bindParam(':address', $address);
+                $stmt->bindParam(':ward', $ward);
+                $stmt->bindParam(':district', $district);
+                $stmt->bindParam(':city', $city);
+                $stmt->bindParam(':image', $image);
+                $stmt->bindParam(':status', $status);
 
                 $stmt->execute();
 

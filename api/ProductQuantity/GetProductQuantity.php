@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ProductQuantity.php';
@@ -41,17 +47,25 @@ try {
     $num = $quantity_stmt->rowCount();
 
     if ($num > 0) {
-        $quantity_rows = $quantity_stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        $quantity_rows = [];
-    }
+        $result = array();
 
-    if ($num > 0) {
-        http_response_code(200);
-        echo json_encode(['status' => 200, 'message' => 'OK', 'data' => $quantity_rows]);
+        foreach ($quantity_stmt as $row) {
+            extract($row);
+            $quantity_item = array(
+                'id' => $ID,
+                'productId' => $PRODUCT_ID,
+                'color' => $COLOR,
+                'quantity' => $QUANTITY,
+                'sold' => $SOLD,
+            );
+
+            array_push($result, $quantity_item);
+        }
+
+        // Return a JSON response with product quantity
+        echo json_encode(['status' => 200, 'data' => $result], JSON_PRETTY_PRINT);
     } else {
-        http_response_code(404);
-        echo json_encode(['status' => 404, 'message' => 'Not Found']);
+        echo json_encode(['status' => 404, 'message' => 'No product quantity found']);
     }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently

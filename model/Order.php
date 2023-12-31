@@ -336,7 +336,7 @@ class Order
         $query = "SELECT * FROM orders";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt;
     }
 
     public function getOrderById($id)

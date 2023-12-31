@@ -2,6 +2,12 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/ParameterAdapter.php';
@@ -31,17 +37,7 @@ try {
 
     // Check if data is not empty
     if (
-        !empty($data->productId) &&
-        !empty($data->model) &&
-        !empty($data->function) &&
-        !empty($data->input) &&
-        !empty($data->output) &&
-        !empty($data->maximum) &&
-        !empty($data->size) &&
-        !empty($data->tech) &&
-        !empty($data->madeIn) &&
-        !empty($data->brandOf) &&
-        !empty($data->brand)
+        !empty($data->productId)
     ) {
         // Set parameter adapter properties
         $parameterAdapter->setPRODUCT_ID($data->productId);
@@ -52,13 +48,13 @@ try {
         $parameterAdapter->setMaximum($data->maximum);
         $parameterAdapter->setSize($data->size);
         $parameterAdapter->setTech($data->tech);
-        $parameterAdapter->setMadeIn($data->madeIn);
-        $parameterAdapter->setBrandOf($data->brandOf);
+        $parameterAdapter->setMadeIn($data->madein);
+        $parameterAdapter->setBrandOf($data->brandof);
         $parameterAdapter->setBrand($data->brand);
 
         // Create the parameter adapter
         if ($parameterAdapter->addParameterAdapter($parameterAdapter)) {
-            echo json_encode(['status' => 200, 'message' => 'Parameter adapter created successfully.']);
+            echo json_encode(['status' => 204, 'message' => 'Parameter adapter created successfully.']);
         } else {
             echo json_encode(['status' => 500, 'message' => 'Unable to create parameter adapter.']);
         }
