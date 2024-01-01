@@ -2,7 +2,7 @@
 
 // Handle preflight request
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-    header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+    header('Access-Control-Allow-Origin: *');  // Replace with the actual origin of your frontend application
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     header('Access-Control-Max-Age: 86400');  // Cache preflight response for 24 hours
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     exit();
 }
 
-header('Access-Control-Allow-Origin: http://localhost:3000');  // Replace with the actual origin of your frontend application
+header('Access-Control-Allow-Origin: *');  // Replace with the actual origin of your frontend application
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 

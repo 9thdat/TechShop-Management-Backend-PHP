@@ -333,7 +333,7 @@ class Order
 
     public function getAllOrders()
     {
-        $query = "SELECT * FROM orders";
+        $query = "SELECT * FROM orders ORDER BY ORDER_DATE DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
