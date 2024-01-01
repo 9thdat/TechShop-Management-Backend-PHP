@@ -28,16 +28,7 @@ try {
     $data = json_decode(file_get_contents("php://input"));
 
     // Check if data is not empty
-    if (!empty($data->email) &&
-        isset($data->name) &&
-        isset($data->phone) &&
-        isset($data->address) &&
-        isset($data->gender) &&
-        isset($data->birthday) &&
-        isset($data->ward) &&
-        isset($data->district) &&
-        isset($data->city) &&
-        isset($data->status)
+    if (!empty($data->email)
     ) {
         // Set user properties
         $user->setEMAIL($data->email);
@@ -49,7 +40,7 @@ try {
         $user->setWARD($data->ward);
         $user->setDISTRICT($data->district);
         $user->setCITY($data->city);
-        $user->setIMAGE($data->image);
+        $user->setIMAGE(base64_decode($data->image));
         $user->setSTATUS($data->status);
 
         // Update the user

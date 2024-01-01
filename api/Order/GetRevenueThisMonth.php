@@ -33,10 +33,20 @@ try {
     }
 
     // Proceed to fetch revenue for the current month
-    $revenueThisMonth = $order->getRevenueThisMonth();
+    $result = $order->getRevenueThisMonth();
 
-    // Return a JSON response with the revenue for the current month
-    echo json_encode(['status' => 200, 'data' => $revenueThisMonth], JSON_PRETTY_PRINT);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        extract($row);
+
+        // Return the revenue for the current month
+        echo json_encode(['status' => 200, 'data' => $revenueThisMonth], JSON_PRETTY_PRINT);
+    } else {
+        // No revenue for the current month
+        echo json_encode(['status' => 200, 'data' => ['revenueThisMonth' => 0]], JSON_PRETTY_PRINT);
+    }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
     http_response_code(500);

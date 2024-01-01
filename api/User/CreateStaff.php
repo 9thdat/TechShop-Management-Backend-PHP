@@ -28,18 +28,7 @@ try {
 
     // Check if data is not empty
     if (
-        !empty($data->EMAIL) &&
-        !empty($data->NAME) &&
-        !empty($data->PASSWORD) &&
-        !empty($data->PHONE) &&
-        !empty($data->GENDER) &&
-        !empty($data->BIRTHDAY) &&
-        !empty($data->ADDRESS) &&
-        !empty($data->WARD) &&
-        !empty($data->DISTRICT) &&
-        !empty($data->CITY) &&
-        !empty($data->ROLE) &&
-        !empty($data->STATUS)
+        !empty($data->EMAIL)
     ) {
         // Set user properties
         $user->setEMAIL($data->EMAIL);
@@ -52,6 +41,7 @@ try {
         $user->setWARD($data->WARD);
         $user->setDISTRICT($data->DISTRICT);
         $user->setCITY($data->CITY);
+        $user->setIMAGE(base64_decode($data->IMAGE));
         $user->setROLE($data->ROLE);
         $user->setSTATUS($data->STATUS);
 

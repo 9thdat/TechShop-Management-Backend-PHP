@@ -34,28 +34,45 @@ try {
 
     // Get posted data
     $data = json_decode(file_get_contents("php://input"), true);
+    // Get the current date and time
+    $currentDate = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+
+    // Get date only
+    $currentDateOnly = $currentDate->format('Y-m-d');
+    $data['description'] = $data['description'] ?? null;
 
     // Check if data is not empty
     if (!empty($data['id'])
     ) {
         // Set Discount properties
         $discount->setId($data['id']);
-        $discount->setCode($data['code']);
-        $discount->setType($data['type']);
-        $discount->setValue($data['value']);
-        $discount->setDescription($data['description'] ?? ''); // Default value is ''
+        $discount->setCODE($data['code']);
+        $discount->setTYPE($data['type']);
+        $discount->setVALUE($data['value']);
+        $discount->setDESCRIPTION($data['description']);
         $discount->setSTART_DATE($data['startDate']);
         $discount->setEND_DATE($data['endDate']);
         $discount->setMIN_APPLY($data['minApply']);
         $discount->setMAX_SPEED($data['maxSpeed']);
-        $discount->setQuantity($data['quantity']);
-        $discount->setStatus($data['status']);
+        $discount->setQUANTITY($data['quantity']);
+        $discount->setSTATUS($data['status']);
 
-        $discountQuery = "SELECT * FROM Discount WHERE id = :id";
+        if ($discount->getSTATUS() !== 'disable') {
+            if ($discount->getEND_DATE() < $currentDateOnly) {
+                $discount->setSTATUS('expired');
+                $discount->setDISABLED_AT($discount->getEND_DATE());
+            } else {
+                $discount->setSTATUS('active');
+            }
+        }
+
+        $discountQuery = "SELECT * FROM Discount WHERE ID = :id";
         $discountStmt = $db->prepare($discountQuery);
         $discountStmt->bindParam(':id', $data['id']);
         $discountStmt->execute();
+
         $discountToUpdate = $discountStmt->fetch(PDO::FETCH_ASSOC);
+
         if (!$discountToUpdate) {
             http_response_code(404);
             echo json_encode(['status' => 404, 'message' => 'Discount not found']);

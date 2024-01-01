@@ -42,8 +42,28 @@ try {
     // Proceed to fetch monthly products sold
     $monthlyProductsSold = $order->getMonthlyProductsSold($startMonth, $startYear, $endMonth, $endYear, $productId);
 
-    // Return a JSON response with the monthly products sold
-    echo json_encode(['status' => 200, 'data' => $monthlyProductsSold], JSON_PRETTY_PRINT);
+    $num = $monthlyProductsSold->rowCount();
+
+    if ($num > 0) {
+        $monthlyProductsSoldArray = array();
+
+        foreach ($monthlyProductsSold as $row) {
+            extract($row);
+
+            $monthlyProductsSoldItem = array(
+                'date' => $Date,
+                'productsSold' => $ProductsSold
+            );
+
+            array_push($monthlyProductsSoldArray, $monthlyProductsSoldItem);
+        }
+
+        http_response_code(200);
+        echo json_encode(['status' => 200, 'message' => 'OK', 'data' => $monthlyProductsSoldArray]);
+    } else {
+        http_response_code(404);
+        echo json_encode(['status' => 404, 'message' => 'No data', 'data' => []]);
+    }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
     http_response_code(500);

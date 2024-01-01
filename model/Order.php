@@ -414,8 +414,7 @@ class Order
         $stmt->bindParam(':currentMonth', $currentMonth, PDO::PARAM_INT);
         $stmt->execute();
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['revenueThisMonth'];
+        return $stmt;
     }
 
     public function getRevenueEachDayThisMonth()
@@ -473,23 +472,23 @@ class Order
                   GROUP BY Date";
 
         $startDate = new DateTimeImmutable("$startYear-$startMonth-01");
+        $startDate = $startDate->format('Y-m-d');
+        $endDate = $endDate->format('Y-m-d');
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':startDate', $startDate->format('Y-m-d'));
-        $stmt->bindParam(':endDate', $endDate->format('Y-m-d'));
+        $stmt->bindParam(':startDate', $startDate);
+        $stmt->bindParam(':endDate', $endDate);
         $stmt->execute();
 
-        $monthlyRevenue = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $monthlyRevenue;
+        return $stmt;
     }
 
     public function getMonthlyRevenueByProduct($startMonth, $startYear, $endMonth, $endYear, $productId)
     {
-        $startDate = "{$startYear}-{$startMonth}-01";
-        $endDate = date('Y-m-t', strtotime("{$endYear}-{$endMonth}-01"));
+        $lastDayOfMonth = date('t', strtotime("$endYear-$endMonth-01"));
+        $endDate = new DateTimeImmutable("$endYear-$endMonth-$lastDayOfMonth");
 
-        $query = "SELECT DATE(o.completed_date) AS Date, SUM(od.quantity * od.price) AS Revenue
+        $query = "SELECT DATE_FORMAT(completed_date, '%Y-%m-%d') AS Date, SUM(od.quantity * od.price) AS Revenue
               FROM order_detail od
               JOIN orders o ON od.order_id = o.id
               WHERE o.completed_date >= :startDate
@@ -498,6 +497,10 @@ class Order
               GROUP BY Date
               ORDER BY Date";
 
+        $startDate = new DateTimeImmutable("$startYear-$startMonth-01");
+        $startDate = $startDate->format('Y-m-d');
+        $endDate = $endDate->format('Y-m-d');
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
@@ -505,21 +508,26 @@ class Order
 
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt;
     }
 
     public function getMonthlyProductsSold($startMonth, $startYear, $endMonth, $endYear, $productId)
     {
-        $startDate = "{$startYear}-{$startMonth}-01";
-        $endDate = date('Y-m-t', strtotime("{$endYear}-{$endMonth}-01"));
+        $lastDayOfMonth = date('t', strtotime("$endYear-$endMonth-01"));
+        $endDate = new DateTimeImmutable("$endYear-$endMonth-$lastDayOfMonth");
 
-        $query = "SELECT DATE(o.completed_date) as Date, SUM(od.quantity) as ProductsSold
-              FROM order_detail od
-              JOIN orders o ON od.order_id = o.id
-              WHERE o.completed_date BETWEEN :startDate AND :endDate
-                AND (:productId IS NULL OR od.product_id = :productId)
-              GROUP BY DATE(o.completed_date)
-              ORDER BY Date";
+        $query = "SELECT DATE_FORMAT(o.completed_date, '%Y-%m-%d') as Date, SUM(od.quantity) as ProductsSold
+          FROM order_detail od
+          JOIN orders o ON od.order_id = o.id
+          WHERE o.completed_date BETWEEN :startDate AND :endDate
+            AND (:productId IS NULL OR od.product_id = :productId)
+          GROUP BY DATE_FORMAT(o.completed_date, '%Y-%m-%d')
+          ORDER BY Date";
+
+
+        $startDate = new DateTimeImmutable("$startYear-$startMonth-01");
+        $startDate = $startDate->format('Y-m-d');
+        $endDate = $endDate->format('Y-m-d');
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
@@ -527,7 +535,33 @@ class Order
         $stmt->bindParam(':productId', $productId);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt;
+    }
+
+    public function getMonthlyProductSold($startMonth, $startYear, $endMonth, $endYear, $productId)
+    {
+        $lastDayOfMonth = date('t', strtotime("$endYear-$endMonth-01"));
+        $endDate = new DateTimeImmutable("$endYear-$endMonth-$lastDayOfMonth");
+
+        $query = "SELECT DATE_FORMAT(o.completed_date, '%Y-%m-%d') as Date, SUM(od.quantity) as ProductsSold
+          FROM order_detail od
+          JOIN orders o ON od.order_id = o.id
+          WHERE o.completed_date BETWEEN :startDate AND :endDate
+            AND (:productId IS NULL OR od.product_id = :productId)
+          GROUP BY DATE_FORMAT(o.completed_date, '%Y-%m-%d')
+          ORDER BY Date";
+
+        $startDate = new DateTimeImmutable("$startYear-$startMonth-01");
+        $startDate = $startDate->format('Y-m-d');
+        $endDate = $endDate->format('Y-m-d');
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+        $stmt->bindParam(':productId', $productId);
+        $stmt->execute();
+
+        return $stmt;
     }
 
     public function addOrder($order)

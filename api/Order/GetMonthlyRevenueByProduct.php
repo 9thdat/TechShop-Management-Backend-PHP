@@ -42,8 +42,28 @@ try {
     // Proceed to fetch monthly revenue by product
     $result = $order->getMonthlyRevenueByProduct($startMonth, $startYear, $endMonth, $endYear, $productId);
 
-    // Return a JSON response with the result
-    echo json_encode(['status' => 200, 'data' => $result], JSON_PRETTY_PRINT);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+        $monthlyRevenueByProductArray = array();
+
+        foreach ($result as $row) {
+            extract($row);
+
+            $monthlyRevenueByProductItem = array(
+                'date' => $Date,
+                'revenue' => $Revenue
+            );
+
+            array_push($monthlyRevenueByProductArray, $monthlyRevenueByProductItem);
+        }
+
+        http_response_code(200);
+        echo json_encode(['status' => 200, 'message' => 'OK', 'data' => $monthlyRevenueByProductArray]);
+    } else {
+        http_response_code(404);
+        echo json_encode(['status' => 404, 'message' => 'No data', 'data' => []]);
+    }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
     http_response_code(500);

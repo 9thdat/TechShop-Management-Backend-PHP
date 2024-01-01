@@ -4,6 +4,11 @@ header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json; charset=utf-8'); // Thêm header để chỉ định kiểu ký tự là UTF-8
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 include_once '../../config/db_azure.php'; // Adjust the path as needed
 include_once '../../model/Review.php';
 include_once '../../model/User.php';
@@ -39,13 +44,13 @@ try {
             extract($row);
             $review_item = array(
                 'id' => $ID,
-                'product_id' => $PRODUCT_ID,
-                'customer_email' => $CUSTOMER_EMAIL,
+                'productId' => $PRODUCT_ID,
+                'customerEmail' => $CUSTOMER_EMAIL,
                 'rating' => $RATING,
                 'content' => $CONTENT,
-                'admin_reply' => $ADMIN_REPLY,
-                'created_at' => $CREATED_AT,
-                'updated_at' => $UPDATED_AT
+                'adminReply' => $ADMIN_REPLY,
+                'createdAt' => $CREATED_AT,
+                'updatedAt' => $UPDATED_AT
             );
 
             array_push($reviews_arr, $review_item);

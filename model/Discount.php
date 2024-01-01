@@ -314,24 +314,24 @@ class Discount
 
     public function createDiscount($data)
     {
-        $query = "INSERT INTO Discount (CODE, TYPE, VALUE, DESCRIPTION, START_DATE, END_DATE, MIN_APPLY, MAX_SPEED, QUANTITY, STATUS, CREATED_AT, UPDATED_AT, DISABLED_AT) VALUES (:code, :type, :value, :description, :start_date, :end_date, :min_apply, :max_speed, :quantity, :status, :created_at,:updated_at, :disabled_at)";
+        $query = "INSERT INTO Discount (CODE, TYPE, VALUE, DESCRIPTION, START_DATE, END_DATE, MIN_APPLY, MAX_SPEED, QUANTITY, STATUS, CREATED_AT, UPDATED_AT, DISABLED_AT) VALUES (:code, :type, :value, :description, :start_date, :end_date, :min_apply, :max_speed, :quantity, :status, :created_at, :updated_at, :disabled_at)";
 
         $stmt = $this->conn->prepare($query);
 
         // Bind parameters
-        $stmt->bindParam(':code', $data->code);
-        $stmt->bindParam(':type', $data->type);
-        $stmt->bindParam(':value', $data->value);
-        $stmt->bindParam(':description', $data->description);
-        $stmt->bindParam(':start_date', $data->startDate);
-        $stmt->bindParam(':end_date', $data->endDate);
-        $stmt->bindParam(':min_apply', $data->minApply);
-        $stmt->bindParam(':max_speed', $data->maxSpeed);
-        $stmt->bindParam(':quantity', $data->quantity);
-        $stmt->bindParam(':status', $data->status);
-        $stmt->bindParam(':created_at', $data->createdAt);
-        $stmt->bindParam(':updated_at', $data->updatedAt);
-        $stmt->bindParam(':disabled_at', $data->disabledAt);
+        $stmt->bindParam(':code', $data->CODE);
+        $stmt->bindParam(':type', $data->TYPE);
+        $stmt->bindParam(':value', $data->VALUE);
+        $stmt->bindParam(':description', $data->DESCRIPTION);
+        $stmt->bindParam(':start_date', $data->START_DATE);
+        $stmt->bindParam(':end_date', $data->END_DATE);
+        $stmt->bindParam(':min_apply', $data->MIN_APPLY);
+        $stmt->bindParam(':max_speed', $data->MAX_SPEED);
+        $stmt->bindParam(':quantity', $data->QUANTITY);
+        $stmt->bindParam(':status', $data->STATUS);
+        $stmt->bindParam(':created_at', $data->CREATED_AT);
+        $stmt->bindParam(':updated_at', $data->UPDATED_AT);
+        $stmt->bindParam(':disabled_at', $data->DISABLED_AT);
 
         if ($stmt->execute()) {
             return true;
@@ -363,15 +363,6 @@ class Discount
                   WHERE id = :id";
 
             $stmt = $this->conn->prepare($query);
-
-            if ($data['status'] != "inactive") {
-                if ($data['endDate'] <= $currentDate) {
-                    $data['status'] = "expired";
-                    $data['disableAt'] = $data['endDate'];
-                } else {
-                    $data['status'] = "active";
-                }
-            }
 
             $stmt->bindParam(':id', $data['id']);
             $stmt->bindParam(':code', $data['code']);

@@ -34,29 +34,33 @@ try {
 
     // Get posted data
     $data = json_decode(file_get_contents("php://input"), true);
-    $currentDate = date('Y-m-d H:i:s');
+    // Get the current date and time
+    $currentDate = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+
+    // Get date only
+    $currentDateOnly = $currentDate->format('Y-m-d');
+    $data['description'] = $data['description'] ?? null;
 
     // Set Discount properties
     $discount->setID($data['id']);
-    $discount->setCode($data['code']);
+    $discount->setCODE($data['code']);
     $discount->setTYPE($data['type']);
-    $discount->setValue($data['value']);
-    $discount->setDESCRIPTION($data['description'] || ''); // Default value is ''
+    $discount->setVALUE($data['value']);
+    $discount->setDESCRIPTION($data['description']);
     $discount->setSTART_DATE($data['startDate']);
     $discount->setEND_DATE($data['endDate']);
     $discount->setMIN_APPLY($data['minApply']);
     $discount->setMAX_SPEED($data['maxSpeed']);
     $discount->setQUANTITY($data['quantity']);
     $discount->setSTATUS($data['status']);
-    $discount->setCREATED_AT($currentDate);
-    $discount->setUPDATED_AT($currentDate);
-    $discount->setDISABLED_AT($data['endDate'] || '');
+    $discount->setCREATED_AT($currentDateOnly);
+    $discount->setUPDATED_AT(null);
+    $discount->setDISABLED_AT($data['endDate']);
 
 
     // Get current date
-
-    if ($discount->getSTATUS() !== 'inactive') {
-        if ($discount->getEND_DATE() < $currentDate) {
+    if ($discount->getSTATUS() !== 'disable') {
+        if ($discount->getEND_DATE() < $currentDateOnly) {
             $discount->setStatus('expired');
         } else {
             $discount->setStatus('active');

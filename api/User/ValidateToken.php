@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
 // Respond to preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -20,7 +21,7 @@ $user = new User($db);
 try {
     // Get the token from the headers
     $allHeaders = getallheaders();
-    
+
     $data = json_decode(file_get_contents("php://input"));
 
     // Validate the token

@@ -37,9 +37,10 @@ try {
     $startYear = $_GET['startYear'];
     $endMonth = $_GET['endMonth'];
     $endYear = $_GET['endYear'];
+    $productId = isset($_GET['productId']) ? $_GET['productId'] : null;
 
     // Proceed to fetch monthly revenue
-    $monthlyRevenue = $order->getMonthlyRevenue($startMonth, $startYear, $endMonth, $endYear);
+    $monthlyRevenue = $order->getMonthlyProductSold($startMonth, $startYear, $endMonth, $endYear, $productId);
 
     $num = $monthlyRevenue->rowCount();
 
@@ -51,7 +52,7 @@ try {
 
             $monthlyRevenueItem = array(
                 'date' => $Date,
-                'revenue' => $Revenue
+                'productsSold' => $ProductsSold
             );
 
             array_push($monthlyRevenueArray, $monthlyRevenueItem);
