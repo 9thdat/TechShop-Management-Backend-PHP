@@ -254,14 +254,6 @@ class User
         $this->ROLE = $ROLE;
     }
 
-    public function getAllUsers()
-    {
-        $query = "SELECT * FROM User";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
     public function validateUser($credentials)
     {
         if ($credentials == null || empty($credentials['email']) || empty($credentials['password'])) {
@@ -339,6 +331,16 @@ class User
     {
         $query = "SELECT * FROM user WHERE ROLE = 'staff'";
         $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function getStaff($email)
+    {
+        $query = "SELECT * FROM user WHERE EMAIL = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
         $stmt->execute();
 
         return $stmt;
