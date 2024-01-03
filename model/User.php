@@ -7,6 +7,8 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
 use Firebase\JWT\Key;
 
+include 'PasswordHasher.php';
+
 class User
 {
     private $conn;
@@ -267,7 +269,6 @@ class User
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-        $stmt->execute();
         if (!$stmt) {
             die(json_encode(["error" => "Query execution failed."]));
         }
@@ -277,12 +278,12 @@ class User
 //        die(); // This will stop the execution to see the output
 
         if (!$user) {
-            return json_encode(["error" => "User not found"]);
+            return json_encode(["status" => 404, "message" => "User not found"]);
         }
 
         // Check if the password is correct
-        if ($password !== $user['PASSWORD']) {
-            return json_encode(["error" => "Invalid password"]);
+        if (!PasswordHasher::verifyPassword($password, $user['PASSWORD'])) {
+            return json_encode(["status" => 401, "message" => "Incorrect password"]);
         }
 
         $role = $user['ROLE'];
@@ -391,7 +392,7 @@ class User
             }
 
             // Hash the password
-            $this->PASSWORD = hash('sha256', $this->PASSWORD);
+            $this->PASSWORD = PasswordHasher::hashPassword($this->PASSWORD);
 
             // Add user to the database
             $query = "INSERT INTO user 
@@ -499,7 +500,7 @@ class User
     {
         try {
             // Hash the password
-            $this->PASSWORD = hash('sha256', $this->PASSWORD);
+            $this->PASSWORD = PasswordHasher::hashPassword($this->PASSWORD);
 
             // Update the password in the database
             $query = "UPDATE user SET PASSWORD = :password WHERE EMAIL = :email";
