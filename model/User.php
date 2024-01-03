@@ -278,11 +278,13 @@ class User
 //        die(); // This will stop the execution to see the output
 
         if (!$user) {
+            http_response_code(404);
             return json_encode(["status" => 404, "message" => "User not found"]);
         }
 
         // Check if the password is correct
         if (!PasswordHasher::verifyPassword($password, $user['PASSWORD'])) {
+            http_response_code(401);
             return json_encode(["status" => 401, "message" => "Incorrect password"]);
         }
 
