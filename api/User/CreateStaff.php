@@ -34,22 +34,22 @@ try {
 
     // Check if data is not empty
     if (
-        !empty($data->EMAIL)
+        !empty($data->email)
     ) {
         // Set user properties
-        $user->setEMAIL($data->EMAIL);
-        $user->setNAME($data->NAME);
-        $user->setPASSWORD($data->PASSWORD);
-        $user->setPHONE($data->PHONE);
-        $user->setGENDER($data->GENDER);
-        $user->setBIRTHDAY($data->BIRTHDAY);
-        $user->setADDRESS($data->ADDRESS);
-        $user->setWARD($data->WARD);
-        $user->setDISTRICT($data->DISTRICT);
-        $user->setCITY($data->CITY);
-        $user->setIMAGE(base64_decode($data->IMAGE));
-        $user->setROLE($data->ROLE);
-        $user->setSTATUS($data->STATUS);
+        $user->setEMAIL($data->email);
+        $user->setNAME($data->name);
+        $user->setPASSWORD($data->password);
+        $user->setPHONE($data->phone);
+        $user->setGENDER($data->gender);
+        $user->setBIRTHDAY($data->birthday);
+        $user->setADDRESS($data->address);
+        $user->setWARD($data->ward);
+        $user->setDISTRICT($data->district);
+        $user->setCITY($data->city);
+        $user->setIMAGE(base64_decode($data->image));
+        $user->setROLE($data->role);
+        $user->setSTATUS($data->status);
 
         // Create the staff
         if ($user->createStaff()) {
