@@ -43,6 +43,34 @@ try {
         while ($row = $allDiscounts->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
 
+            if ($STATUS !== "disabled") {
+                if (strtotime($END_DATE) <= time()) {
+                    $STATUS = "expired";
+                    $discount->setDISABLED_AT(date('Y-m-d H:i:s'));
+
+                    // Save changes to the database
+                    $sql = "UPDATE Discount SET status = :status, disabled_at = :disabled_at WHERE id = :id";
+                    $stmt = $db->prepare($sql);
+
+                    $stmt->bindParam(':status', $STATUS);
+                    $stmt->bindParam(':disabled_at', $DISABLED_AT);
+                    $stmt->bindParam(':id', $ID);
+
+                    $stmt->execute();
+                } else {
+                    $STATUS = "active";
+
+                    // Save changes to the database
+                    $sql = "UPDATE Discount SET status = :status WHERE id = :id";
+                    $stmt = $db->prepare($sql);
+
+                    $stmt->bindParam(':status', $STATUS);
+                    $stmt->bindParam(':id', $ID);
+
+                    $stmt->execute();
+                }
+            }
+
             $discount_item = array(
                 'id' => $ID,
                 'code' => $CODE,

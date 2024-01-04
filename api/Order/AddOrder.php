@@ -34,36 +34,31 @@ try {
     // Get posted data
     $data = json_decode(file_get_contents("php://input"));
 
-    // Check if data is not empty
-    if (!empty($data->customerEmail) && !empty($data->name) /* Add other required fields here */) {
-        // Set order properties
-        $order->setID($data->id);
-        $order->setCUSTOMER_EMAIL($data->customerEmail);
-        $order->setNAME($data->name);
-        $order->setAddress($data->address);
-        $order->setWard($data->ward);
-        $order->setDistrict($data->district);
-        $order->setCity($data->city);
-        $order->setPhone($data->phone);
-        $order->setDISCOUNT_ID($data->discountId);
-        $order->setSHIPPING_FEE($data->shippingFee);
-        $order->setTOTAL_PRICE($data->totalPrice);
-        $order->setNote($data->note);
-        $order->setORDER_DATE($data->orderDate);
-        $order->setCANCELED_DATE($data->canceledDate);
-        $order->setCOMPLETED_DATE($data->completedDate);
-        $order->setDELIVERY_TYPE($data->deliveryType);
-        $order->setPAYMENT_TYPE($data->paymentType);
-        $order->setStatus($data->status);
+    // Set order properties
+    $order->setID($data->id);
+    $order->setCUSTOMER_EMAIL($data->customerEmail);
+    $order->setNAME($data->name);
+    $order->setAddress($data->address);
+    $order->setWard($data->ward);
+    $order->setDistrict($data->district);
+    $order->setCity($data->city);
+    $order->setPhone($data->phone);
+    $order->setDISCOUNT_ID($data->discountId);
+    $order->setSHIPPING_FEE($data->shippingFee);
+    $order->setTOTAL_PRICE($data->totalPrice);
+    $order->setNote($data->note);
+    $order->setORDER_DATE($data->orderDate);
+    $order->setCANCELED_DATE($data->canceledDate);
+    $order->setCOMPLETED_DATE($data->completedDate);
+    $order->setDELIVERY_TYPE($data->deliveryType);
+    $order->setPAYMENT_TYPE($data->paymentType);
+    $order->setStatus($data->status);
 
-        // Create the order
-        if ($order->addOrder($data)) {
-            echo json_encode(['status' => 200, 'message' => 'Order created successfully.']);
-        } else {
-            echo json_encode(['status' => 500, 'message' => 'Unable to create order.']);
-        }
+    // Create the order
+    if ($order->addOrder($data)) {
+        echo json_encode(['status' => 200, 'message' => 'Order created successfully.']);
     } else {
-        echo json_encode(['status' => 400, 'message' => 'Incomplete data. Please provide all required fields.']);
+        echo json_encode(['status' => 500, 'message' => 'Unable to create order.']);
     }
 } catch (Exception $e) {
     // Handle exceptions, you may want to log or handle differently
