@@ -163,7 +163,7 @@ class Review
 
     public function GetAllReviews()
     {
-        $query = "SELECT * FROM review";
+        $query = "SELECT * FROM review ORDER BY ID DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;

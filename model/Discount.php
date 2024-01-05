@@ -265,7 +265,7 @@ class Discount
 
     public function getAllDiscounts()
     {
-        $query = "SELECT * FROM Discount";
+        $query = "SELECT * FROM Discount ORDER BY ID DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
